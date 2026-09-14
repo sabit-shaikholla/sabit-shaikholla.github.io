@@ -1,30 +1,14 @@
-/* Scientific / Obsidian Graph Aesthetics (Catppuccin Mocha) */
+/* Knowledge graph chrome. Colors come from the site design system
+   (design-system.css), so both themes follow the page's theme toggle. */
 :root {
-  /* Catppuccin Mocha Palette */
-  --graph-bg: #1e1e2e;
-  --graph-panel-bg: rgba(24, 24, 37, 0.85);
-  /* Mantle with opacity */
-  --graph-border: rgba(49, 50, 68, 0.5);
-  /* Surface0/Overlay0 mix */
-  --graph-text: #cdd6f4;
-  /* Text */
-  --graph-text-muted: rgba(205, 214, 244, 0.6);
-  --graph-accent: #cba6f7;
-  /* Mauve */
-  --graph-accent-blue: #89b4fa;
-  --graph-btn-hover: rgba(180, 190, 254, 0.1);
-  /* Lavender tint */
-}
-
-[data-theme="light"] {
-  --graph-bg: #eff1f5;
-  --graph-panel-bg: rgba(255, 255, 255, 0.9);
-  --graph-border: rgba(204, 208, 218, 0.8);
-  --graph-text: #4c4f69;
-  --graph-text-muted: rgba(76, 79, 105, 0.65);
-  --graph-accent: #8839ef;
-  --graph-accent-blue: #1e66f5;
-  --graph-btn-hover: rgba(136, 57, 239, 0.08);
+  --graph-bg: var(--surface);
+  --graph-panel-bg: var(--glass);
+  --graph-border: var(--hair);
+  --graph-text: var(--ink);
+  --graph-text-muted: var(--ink-2);
+  --graph-accent: var(--accent);
+  --graph-accent-blue: var(--accent);
+  --graph-btn-hover: var(--accent-soft);
 }
 
 #graph-container {
@@ -33,14 +17,11 @@
   /* Taller viewport */
   min-height: 600px;
   background-color: var(--graph-bg);
-  border-radius: 12px;
+  border-radius: 20px;
   position: relative;
   overflow: hidden;
-  font-family: "JetBrains Mono", "SF Mono", "Fira Code", monospace;
-  /* Coding Terminal feel */
+  font-family: var(--mono);
   cursor: crosshair;
-  box-shadow: inset 0 0 50px rgba(0, 0, 0, 0.3);
-  /* Softer Depth */
   border: 1px solid var(--graph-border);
 }
 
@@ -93,10 +74,8 @@
 
 .graph-btn:hover {
   background: var(--graph-btn-hover);
-  color: #fff;
+  color: var(--graph-text);
   border-color: var(--graph-border);
-  box-shadow: 0 0 10px rgba(203, 166, 247, 0.1);
-  /* Mauve glow */
 }
 
 .graph-btn svg {
@@ -135,7 +114,7 @@
 
 #graph-search:focus {
   border-color: var(--graph-accent);
-  box-shadow: 0 0 0 3px rgba(203, 166, 247, 0.15);
+  box-shadow: 0 0 0 4px var(--accent-soft);
 }
 
 .graph-search-results {
@@ -151,7 +130,7 @@
   overflow: hidden;
   z-index: 30;
   display: none;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+  box-shadow: var(--shadow);
 }
 
 .graph-search-results.visible {
@@ -199,7 +178,7 @@
 .graph-chip.active {
   color: var(--graph-text);
   border-color: var(--graph-accent);
-  box-shadow: 0 0 8px rgba(203, 166, 247, 0.15);
+  background: var(--graph-btn-hover);
 }
 
 .graph-chip:hover {
@@ -232,7 +211,7 @@
   transform: translateX(-12px);
   pointer-events: none;
   transition: opacity 0.25s ease, transform 0.25s ease;
-  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.3);
+  box-shadow: var(--shadow);
   font-size: 13px;
   line-height: 1.5;
 }
@@ -345,7 +324,7 @@
   margin-top: 14px;
   padding: 8px 16px;
   background: var(--graph-accent);
-  color: #11111b;
+  color: var(--on-accent);
   border-radius: 8px;
   text-decoration: none;
   font-size: 12.5px;
@@ -510,7 +489,7 @@
 #layout-toggle.active {
   color: var(--graph-text);
   border-color: var(--graph-accent-blue);
-  box-shadow: 0 0 8px rgba(137, 180, 250, 0.2);
+  background: var(--graph-btn-hover);
 }
 
 #layout-toggle:disabled {
@@ -524,7 +503,6 @@
   align-items: center;
   justify-content: center;
   height: 100%;
-  color: #f38ba8;
-  /* Red */
+  color: #D03B3B;
   font-size: 0.9rem;
 }

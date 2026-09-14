@@ -10,31 +10,31 @@
     "skills": {
         "rag-retrieval": {
             "name": "RAG & Retrieval",
-            "color": "#89b4fa"
+            "color": "#0B8BA3"
         },
         "agentic-systems": {
             "name": "Agentic Systems",
-            "color": "#cba6f7"
+            "color": "#5A5FD8"
         },
         "llm-evaluation": {
             "name": "LLM Evaluation",
-            "color": "#f9e2af"
+            "color": "#BC7612"
         },
         "llm-engineering": {
             "name": "LLM Engineering",
-            "color": "#94e2d5"
+            "color": "#B8508A"
         },
         "ml-data-science": {
             "name": "ML & Data Science",
-            "color": "#f5c2e7"
+            "color": "#3E8E41"
         },
         "backend-cloud": {
             "name": "Backend & Cloud",
-            "color": "#a6e3a1"
+            "color": "#2F7FD1"
         },
         "software-craft": {
             "name": "Software Craft",
-            "color": "#fab387"
+            "color": "#D0583A"
         }
     },
     "chunks": [

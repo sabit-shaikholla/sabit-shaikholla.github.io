@@ -1,0 +1,12 @@
+{{- /* dict "start" "2023-04" "end" "2025-07"|nil -> "2 yrs 4 mos" (months counted inclusively,
+       LinkedIn-style). career.js recomputes this in the browser so current roles never go stale. */ -}}
+{{- $s := time (printf "%s-01" .start) -}}
+{{- $e := now -}}
+{{- with .end }}{{ $e = time (printf "%s-01" .) }}{{ end -}}
+{{- $n := add (mul (sub $e.Year $s.Year) 12) (sub (int $e.Month) (int $s.Month)) 1 -}}
+{{- $y := div $n 12 -}}
+{{- $m := mod $n 12 -}}
+{{- $parts := slice -}}
+{{- if gt $y 0 }}{{ $parts = $parts | append (printf "%d yr%s" $y (cond (gt $y 1) "s" "")) }}{{ end -}}
+{{- if gt $m 0 }}{{ $parts = $parts | append (printf "%d mo%s" $m (cond (gt $m 1) "s" "")) }}{{ end -}}
+{{- return (delimit $parts " ") -}}

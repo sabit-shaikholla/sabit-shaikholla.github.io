@@ -1,0 +1,312 @@
+{{- /* Career page. All content comes from data/career.json and is rendered here, so the
+       page reads fully without JavaScript. assets/js/career.js adds the trajectory chart,
+       the scroll-drawn timeline, Ask my career, skill evidence, the detail sheet and citations. */ -}}
+{{ define "main" }}
+{{- $d := site.Data.career -}}
+{{- $p := $d.profile -}}
+{{- $kinds := dict "work" "Work" "education" "Education" "research" "Research" -}}
+{{- $lanes := dict "ai" "AI / LLM" "sys" "Engineering" "res" "Research" "edu" "Education" -}}
+
+{{- /* TIL + Portfolio posts, keyed by file name: related writing, skill evidence, AI lane dots */ -}}
+{{- $posts := dict -}}
+{{- range where site.RegularPages "Section" "in" (slice "til" "portfolio") -}}
+  {{- if .File -}}
+    {{- $tags := apply (.Params.tags | default slice) "lower" "." -}}
+    {{- $posts = merge $posts (dict .File.ContentBaseName (dict "t" .LinkTitle "d" (.Date.Format "2006-01") "url" .RelPermalink "ai" (in $tags "ai"))) -}}
+  {{- end -}}
+{{- end -}}
+
+<div class="career">
+
+  <section class="hero wrap">
+    <div class="eyebrow">{{ $p.eyebrow }}</div>
+    <h1>{{ $p.headline }} <span>{{ $p.headlineMuted }}</span></h1>
+    <p class="lede">{{ $p.lede }}</p>
+    <div class="hero-row">
+      <span class="status"><i></i>{{ $p.status }}</span>
+      <div class="plinks">
+        {{- range $p.links }}<a href="{{ .url }}" target="_blank" rel="noopener">{{ .label }}</a>{{ end -}}
+      </div>
+    </div>
+  </section>
+
+  <section class="block wrap" id="trajectory" aria-labelledby="traj-h">
+    <div class="head">
+      <div>
+        <h2 id="traj-h">Trajectory</h2>
+        <p class="lede">Every role, degree and paper at its real dates. Hover or focus a mark for details; select it to jump to the entry.</p>
+      </div>
+    </div>
+    <div class="chart-shell">
+      <div id="chart" role="img" aria-label="Swimlane chart of career from 2015 to now across AI/LLM, engineering, research and education"></div>
+      <div class="tip" id="tip" role="status"></div>
+    </div>
+    <div class="chart-foot">
+      <span>Dots in Research are papers; dots in AI / LLM are write-ups on this site.</span>
+      <details class="tableview">
+        <summary>Show as table</summary>
+        <div class="tablewrap">
+          <table>
+            <thead><tr><th>Lane</th><th>Item</th><th>Organisation or venue</th><th>From</th><th>To</th></tr></thead>
+            <tbody>
+              {{- range $d.entries }}{{ $e := . }}{{ range $role := .roles }}{{ with $role.chart }}
+              <tr><td>{{ index $lanes .lane }}</td><td>{{ $role.title }}</td><td>{{ .sub | default $e.org }}</td><td class="num">{{ partial "career/ym.html" $role.start }}</td><td class="num">{{ partial "career/ym.html" $role.end }}</td></tr>
+              {{- end }}{{ end }}{{ end }}
+              {{- range $d.publications }}
+              <tr><td>Research</td><td>{{ .title }}</td><td>{{ .venue }}</td><td class="num">{{ partial "career/ym.html" .ym }}</td><td class="num">–</td></tr>
+              {{- end }}
+              {{- range $slug, $post := $posts }}{{ if $post.ai }}
+              <tr><td>AI / LLM</td><td>{{ $post.t }}</td><td>Write-up</td><td class="num">{{ partial "career/ym.html" $post.d }}</td><td class="num">–</td></tr>
+              {{- end }}{{ end }}
+            </tbody>
+          </table>
+        </div>
+      </details>
+    </div>
+  </section>
+
+  <section class="wrap" aria-label="Selected results">
+    <div class="specs">
+      {{- range $d.specs }}
+      <div class="spec">
+        <div class="spec-v">{{ .value }}{{ with .unit }}<small>{{ . }}</small>{{ end }}</div>
+        <p>{{ .label }}</p>
+        <button type="button" data-go="{{ .ref }}">{{ .org }} ›</button>
+      </div>
+      {{- end }}
+    </div>
+  </section>
+
+  <section class="block wrap" id="timeline" aria-labelledby="tl-h">
+    <div class="head"><h2 id="tl-h">Timeline</h2></div>
+    <div class="controls">
+      <div class="ask-col">
+        <label class="ask" for="ask">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+          <span class="sr">Ask my career</span>
+          <input id="ask" type="search" autocomplete="off" placeholder="Ask my career, e.g. “led a team”">
+          <kbd aria-hidden="true">/</kbd>
+        </label>
+        <div class="chips" id="suggest">
+          {{- range $d.suggestions }}<button class="chip" type="button" aria-pressed="false">{{ . }}</button>{{ end -}}
+        </div>
+        <div class="ask-status" id="ask-status" aria-live="polite"></div>
+        <div class="ask-note" id="ask-note">Keywords match instantly. A small language model then loads in your browser to match by meaning; your question never leaves this page.</div>
+      </div>
+      <div class="seg" role="group" aria-label="Filter timeline" id="filter">
+        <button type="button" data-f="all" aria-pressed="true">All</button>
+        <button type="button" data-f="work" aria-pressed="false">Work</button>
+        <button type="button" data-f="education" aria-pressed="false">Education</button>
+        <button type="button" data-f="research" aria-pressed="false">Research</button>
+      </div>
+    </div>
+
+    <div class="tl" id="tl">
+      <div class="tl-year" aria-hidden="true">
+        <div class="tl-year-inner"><div class="tl-year-n now" id="year-n">Now</div><div class="tl-year-r mono" id="year-r"></div></div>
+      </div>
+      <div class="rail" aria-hidden="true"><div class="rail-fill"></div><div class="rail-head"></div></div>
+      <ol class="entries" id="entries">
+        {{- range $d.entries }}
+        {{- $e := . }}
+        {{- $first := index .roles (sub (len .roles) 1) }}
+        {{- $last := index .roles 0 }}
+        {{- $endYear := "Now" }}{{ with $last.end }}{{ $endYear = printf "%d" (time (printf "%s-01" .)).Year }}{{ end }}
+        <li class="entry" id="{{ .id }}" data-kind="{{ .kind }}" data-year="{{ $endYear }}" data-start="{{ $first.start }}"{{ with $last.end }} data-end="{{ . }}"{{ end }}>
+          <span class="node" aria-hidden="true"></span>
+          <div class="kind">{{ index $kinds .kind }}{{ if not $last.end }} · <span class="current">Current</span>{{ end }}</div>
+          <div class="org">
+            <span class="mono-tile" aria-hidden="true">{{ .mono }}</span>
+            <span class="org-name"><b>{{ .org }}</b>{{ .place }}</span>
+          </div>
+          {{- with .about }}
+          <p class="summary about">{{ . }}{{ range $e.links }} <a href="{{ .url }}" target="_blank" rel="noopener">{{ .label }}&nbsp;↗</a>{{ end }}</p>
+          {{- end }}
+          {{- range $i, $r := .roles }}
+          {{- if gt $i 0 }}{{ $prev := index $e.roles (sub $i 1) }}
+          <div class="promo">{{ with $prev.transition }}{{ . }}{{ else }}Promoted · {{ partial "career/ym.html" $prev.start }}{{ end }}</div>
+          {{- end }}
+          <div class="role"{{ if ne $r.id $e.id }} id="{{ $r.id }}"{{ end }} data-role="{{ $r.id }}">
+            {{- with $r.rank }}<div class="rank">{{ . }}</div>{{ end }}
+            <h3>{{ $r.title }}</h3>
+            <div class="meta">
+              <span>{{ partial "career/ym.html" $r.start }} – {{ partial "career/ym.html" $r.end }}</span>
+              <span class="dur" data-start="{{ $r.start }}"{{ with $r.end }} data-end="{{ . }}"{{ end }}>{{ partial "career/dur.html" (dict "start" $r.start "end" $r.end) }}</span>
+              {{- with $r.link }}<a href="{{ .url }}" target="_blank" rel="noopener">{{ .label }} ↗</a>{{ end }}
+            </div>
+            {{- with $r.summary }}<p class="summary">{{ . }}</p>{{ end }}
+            {{- with $r.wins }}
+            <ul class="wins">
+              {{- range $j, $w := . }}<li{{ if gt $j 1 }} class="extra"{{ end }} data-i="{{ $j }}">{{ $w | safeHTML }}</li>{{ end }}
+            </ul>
+            {{- end }}
+            {{- with $r.stack }}<div class="stack">{{ range . }}<span>{{ . }}</span>{{ end }}</div>{{ end }}
+            {{- $hidden := sub (len $r.wins) 2 }}
+            {{- if or (gt $hidden 0) (gt (len $r.related) 0) }}
+            <button class="more" type="button" data-sheet="{{ $r.id }}">{{ if gt $hidden 0 }}Show {{ $hidden }} more{{ else }}Details{{ end }}</button>
+            {{- end }}
+            {{- if $r.pubs }}<button class="more" type="button" data-go="research">See all {{ len $d.publications }} papers</button>{{ end }}
+          </div>
+          {{- end }}
+        </li>
+        {{- end }}
+      </ol>
+    </div>
+  </section>
+
+  {{- $r := $d.research }}
+  <section class="block wrap" id="research" aria-labelledby="res-h">
+    <div class="head">
+      <div>
+        <h2 id="res-h">Research</h2>
+        <p class="lede">{{ $r.lede }}</p>
+      </div>
+    </div>
+    <div class="metrics">
+      <div class="metric"><b>{{ $r.citations }}</b><span>citations</span></div>
+      <div class="metric"><b>{{ $r.hIndex }}</b><span>h-index</span></div>
+      <div class="metric"><b>{{ $r.i10Index }}</b><span>i10-index</span></div>
+      <div class="metric"><b>{{ len $d.publications }}</b><span>publications</span></div>
+    </div>
+    <div class="src">
+      <span>{{ $r.asOf }}</span>
+      <a href="https://orcid.org/{{ $r.orcid }}" target="_blank" rel="noopener">ORCID <span class="mono">{{ $r.orcid }}</span></a>
+      <a href="{{ $r.scholar }}" target="_blank" rel="noopener">Google Scholar</a>
+      <span class="seg" role="group" aria-label="Sort publications" id="pub-sort">
+        <button type="button" data-s="year" aria-pressed="true">Newest</button>
+        <button type="button" data-s="cites" aria-pressed="false">Most cited</button>
+      </span>
+    </div>
+    {{- $max := 1 }}
+    {{- range $d.publications }}{{ with .cites }}{{ if gt . $max }}{{ $max = . }}{{ end }}{{ end }}{{ end }}
+    <ol class="pubs" id="pubs">
+      {{- range $d.publications }}
+      {{- $href := .href }}{{ with .doi }}{{ $href = printf "https://doi.org/%s" . }}{{ end }}
+      {{- $c := .cites | default 0 }}
+      <li class="pub" id="{{ .id }}" data-ym="{{ .ym }}" data-cites="{{ $c }}">
+        <div class="pub-year">{{ substr .ym 0 4 }}</div>
+        <div>
+          <a class="pub-title" href="{{ $href }}" target="_blank" rel="noopener">{{ .title }}</a>
+          <div class="pub-auth">{{ range $k, $a := .authors }}{{ if $k }}, {{ end }}{{ if findRE "Shai(k)?holla" $a }}<b>{{ $a }}</b>{{ else }}{{ $a }}{{ end }}{{ end }}</div>
+          <div class="pub-venue"><span class="type">{{ .type }}</span><span>{{ .venue }}</span></div>
+        </div>
+        <div class="cites">
+          <div class="cites-n">{{ with .cites }}{{ . }}{{ else }}–{{ end }} <small>citations</small></div>
+          <div class="cbar" aria-hidden="true"><i style="{{ printf "width:%.1f%%" (mul 100.0 (div (float $c) (float $max))) | safeCSS }}"></i></div>
+          <button class="cite" type="button" data-cite="{{ .id }}">Cite</button>
+        </div>
+      </li>
+      {{- end }}
+    </ol>
+  </section>
+
+  <section class="block wrap" id="skills" aria-labelledby="sk-h">
+    <div class="head">
+      <div>
+        <h2 id="sk-h">Skills</h2>
+        <p class="lede">Select a skill to see where I used it. The chart and timeline above highlight the same roles.</p>
+      </div>
+    </div>
+    <div class="skill-groups">
+      {{- range $gi, $g := $d.skills }}
+      <div>
+        <h3>{{ $g.group }}</h3>
+        <div class="chips">
+          {{- range $si, $s := $g.items }}<button class="chip" type="button" aria-pressed="false" data-skill="{{ $gi }}-{{ $si }}">{{ $s.name }}</button>{{ end -}}
+        </div>
+      </div>
+      {{- end }}
+    </div>
+    <div class="evidence" id="evidence" aria-live="polite">
+      <h4>No skill selected</h4>
+      <p>Pick one above, for example RAG or Team leadership.</p>
+    </div>
+  </section>
+
+  <section class="block wrap" id="languages" aria-labelledby="lang-h">
+    <div class="head">
+      <div>
+        <h2 id="lang-h">Languages &amp; certifications</h2>
+        <p class="lede">Language levels follow the CEFR scale, A1 to C2. Every certification links to its issuer's verification page.</p>
+      </div>
+    </div>
+    <div class="two">
+      <div>
+        <div class="eyebrow">Languages</div>
+        <ul class="slots langs">
+          {{- range $d.languages }}{{ $lvl := .cefr }}
+          <li><span>{{ .name }}</span><span class="lvl">{{ .level }}<span class="cefr" aria-hidden="true">{{ range seq 6 }}<i{{ if le . $lvl }} class="on"{{ end }}></i>{{ end }}</span></span></li>
+          {{- end }}
+        </ul>
+      </div>
+      <div>
+        <div class="eyebrow">Certifications</div>
+        <ul class="slots certs">
+          {{- range $d.certifications }}
+          <li>
+            <span class="cert"><b>{{ .name }}</b><span>{{ .issuer }}</span></span>
+            <span class="cert-r">{{ partial "career/ym.html" .date }}<a href="{{ .url }}" target="_blank" rel="noopener" aria-label="Verify {{ .name }}">Verify</a></span>
+          </li>
+          {{- end }}
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="contact wrap" id="contact" aria-labelledby="ct-h">
+    <div class="eyebrow">Contact</div>
+    <h2 id="ct-h">Hiring for AI/LLM or forward deployed engineering?</h2>
+    <p class="lede">Email is fastest. I'm based in {{ $p.timezone }}.</p>
+    <div class="hero-row">
+      <button class="btn btn-accent" type="button" id="copy-email" data-email="{{ $p.email }}">Copy email address</button>
+      {{- range where $p.links "label" "LinkedIn" }}
+      <a class="btn btn-ghost" href="{{ .url }}" target="_blank" rel="noopener">Message on LinkedIn</a>
+      {{- end }}
+    </div>
+  </section>
+
+  <dialog class="sheet" id="sheet" aria-labelledby="sheet-title"><div class="sheet-in" id="sheet-in"></div></dialog>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+</div>
+
+<script type="application/json" id="career-data">
+  {{- dict
+      "entries" $d.entries
+      "publications" $d.publications
+      "skills" $d.skills
+      "posts" $posts
+      "index" ("career/career-index.json" | relURL)
+      "vectors" ("career/career-vectors.bin" | relURL)
+    | jsonify | safeJS -}}
+</script>
+
+{{- /* Person structured data for search engines */ -}}
+{{- $alumni := slice }}{{ $seen := slice }}
+{{- range $d.entries }}{{ if and (eq .kind "education") (not (in $seen .org)) }}
+  {{- $alumni = $alumni | append (dict "@type" "CollegeOrUniversity" "name" .org) }}{{ $seen = $seen | append .org }}
+{{- end }}{{ end }}
+{{- $creds := slice }}
+{{- range $d.certifications }}
+  {{- $creds = $creds | append (dict "@type" "EducationalOccupationalCredential" "name" .name "url" .url "recognizedBy" (dict "@type" "Organization" "name" .issuer)) }}
+{{- end }}
+{{- $sameAs := slice }}{{ range $p.links }}{{ $sameAs = $sameAs | append .url }}{{ end }}
+{{- $langs := slice }}{{ range $d.languages }}{{ $langs = $langs | append .name }}{{ end }}
+<script type="application/ld+json">
+  {{- dict
+      "@context" "https://schema.org"
+      "@type" "Person"
+      "name" $p.name
+      "url" site.Home.Permalink
+      "jobTitle" "AI/LLM Engineer"
+      "worksFor" (dict "@type" "Organization" "name" "Netcracker Technology")
+      "address" (dict "@type" "PostalAddress" "addressLocality" "Almaty" "addressCountry" "KZ")
+      "alumniOf" $alumni
+      "sameAs" $sameAs
+      "knowsLanguage" $langs
+      "hasCredential" $creds
+    | jsonify | safeJS -}}
+</script>
+
+{{- $js := resources.Get "js/career.js" | resources.Minify | resources.Fingerprint }}
+<script src="{{ $js.RelPermalink }}" integrity="{{ $js.Data.Integrity }}" defer></script>
+{{ end }}

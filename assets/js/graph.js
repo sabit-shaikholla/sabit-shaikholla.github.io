@@ -27,10 +27,12 @@ class KnowledgeGraph {
         this.nodeById = new Map();
         this.reduceMotion = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches || false;
 
-        // Community palette (Catppuccin-derived, distinct hues)
+        // Community palette: the seven skill colors from data/skills.json (validated for
+        // colorblind separation and 3:1 contrast on both theme surfaces), then a neutral
+        // "other" gray so an eighth cluster never gets a made-up hue
         this.palette = [
-            '#cba6f7', '#a6e3a1', '#89b4fa', '#f9e2af', '#94e2d5',
-            '#fab387', '#f5c2e7', '#89dceb', '#eba0ac', '#b4befe'
+            '#0B8BA3', '#5A5FD8', '#BC7612', '#B8508A', '#3E8E41', '#2F7FD1', '#D0583A',
+            '#7A808A'
         ];
 
         this.init();
@@ -38,26 +40,22 @@ class KnowledgeGraph {
 
     /* ---------------- Theme ---------------- */
 
+    // Canvas colors follow the site design tokens (design-system.css)
     theme() {
         const dark = document.documentElement.dataset.theme !== 'light';
-        return dark ? {
-            bg: '#1e1e2e',
-            panelBg: 'rgba(30, 30, 46, 0.75)',
-            text: '#cdd6f4',
-            textMuted: 'rgba(205, 214, 244, 0.72)',
-            link: 'rgba(147, 153, 178, 0.18)',
-            linkHighlight: 'rgba(137, 180, 250, 0.6)',
-            hullOpacity: 0.07,
-            dimOpacity: 0.08
-        } : {
-            bg: '#eff1f5',
-            panelBg: 'rgba(255, 255, 255, 0.8)',
-            text: '#4c4f69',
-            textMuted: 'rgba(76, 79, 105, 0.72)',
-            link: 'rgba(140, 143, 161, 0.35)',
-            linkHighlight: 'rgba(30, 102, 245, 0.55)',
-            hullOpacity: 0.1,
-            dimOpacity: 0.15
+        const css = getComputedStyle(document.documentElement);
+        const token = (name, fallback) => css.getPropertyValue(name).trim() || fallback;
+        const ink = token('--ink', dark ? '#F2F4F6' : '#15171A');
+        return {
+            bg: token('--surface', dark ? '#16181B' : '#F1F3F5'),
+            panelBg: dark ? 'rgba(22, 24, 27, 0.78)' : 'rgba(241, 243, 245, 0.82)',
+            text: ink,
+            textMuted: token('--ink-2', dark ? '#A3A9B1' : '#5B6069'),
+            ring: ink,
+            link: dark ? 'rgba(255, 255, 255, 0.12)' : 'rgba(21, 23, 26, 0.16)',
+            linkHighlight: dark ? 'rgba(69, 198, 219, 0.7)' : 'rgba(8, 117, 138, 0.6)',
+            hullOpacity: dark ? 0.07 : 0.08,
+            dimOpacity: dark ? 0.1 : 0.14
         };
     }
 
@@ -545,7 +543,7 @@ class KnowledgeGraph {
         }
 
         if (isSelected) {
-            ctx.strokeStyle = '#ffffff';
+            ctx.strokeStyle = t.ring;
             ctx.lineWidth = 1.5 / globalScale;
             ctx.beginPath();
             ctx.arc(node.x, node.y, r + 3, 0, 2 * Math.PI, false);
@@ -558,7 +556,7 @@ class KnowledgeGraph {
 
         if (isHovered || isSelected) {
             show = true; fontSize = 13.5 / globalScale; weight = 'bold';
-            textColor = document.documentElement.dataset.theme === 'light' ? '#1e1e2e' : '#ffffff';
+            textColor = t.text;
             bgOpacity = 0.92;
         } else if (isSkill) {
             show = true; fontSize = Math.max(12.5 / globalScale, 4); weight = '600';
@@ -727,7 +725,7 @@ class KnowledgeGraph {
             .filter(([cid]) => (counts.get(cid) || 0) > 1)
             .sort(([, a], [, b]) => (b.skill ? 1 : 0) - (a.skill ? 1 : 0))
             .map(([cid, c]) =>
-                `<div class="legend-item"><div class="legend-dot" style="background:${c.color}; box-shadow: 0 0 8px ${c.color};"></div>${this.escape(c.label)} <span class="legend-count">${counts.get(cid)}</span></div>`);
+                `<div class="legend-item"><div class="legend-dot" style="background:${c.color}"></div>${this.escape(c.label)} <span class="legend-count">${counts.get(cid)}</span></div>`);
         const edgeItems = [
             `<div class="legend-item"><span class="legend-line"></span>shared tags</div>`,
             this.semanticMeta ? `<div class="legend-item"><span class="legend-line legend-line-dashed"></span>semantic</div>` : ''

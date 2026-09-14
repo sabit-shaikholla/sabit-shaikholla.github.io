@@ -1,22 +1,13 @@
-/* Content Atlas (shares the Catppuccin variable scheme with the graph) */
+/* Content Atlas chrome. Colors come from the site design system
+   (design-system.css), shared with the knowledge graph. */
 :root {
-  --atlas-bg: #1e1e2e;
-  --atlas-panel-bg: rgba(24, 24, 37, 0.85);
-  --atlas-border: rgba(49, 50, 68, 0.5);
-  --atlas-text: #cdd6f4;
-  --atlas-text-muted: rgba(205, 214, 244, 0.6);
-  --atlas-accent: #cba6f7;
-  --atlas-btn-hover: rgba(180, 190, 254, 0.1);
-}
-
-[data-theme="light"] {
-  --atlas-bg: #eff1f5;
-  --atlas-panel-bg: rgba(255, 255, 255, 0.9);
-  --atlas-border: rgba(204, 208, 218, 0.8);
-  --atlas-text: #4c4f69;
-  --atlas-text-muted: rgba(76, 79, 105, 0.65);
-  --atlas-accent: #8839ef;
-  --atlas-btn-hover: rgba(136, 57, 239, 0.08);
+  --atlas-bg: var(--surface);
+  --atlas-panel-bg: var(--glass);
+  --atlas-border: var(--hair);
+  --atlas-text: var(--ink);
+  --atlas-text-muted: var(--ink-2);
+  --atlas-accent: var(--accent);
+  --atlas-btn-hover: var(--accent-soft);
 }
 
 .atlas-wrapper {
@@ -47,7 +38,7 @@
 
 #atlas-search:focus {
   border-color: var(--atlas-accent);
-  box-shadow: 0 0 0 3px rgba(203, 166, 247, 0.15);
+  box-shadow: 0 0 0 4px var(--accent-soft);
 }
 
 .atlas-search-btn {
@@ -55,7 +46,7 @@
   font-family: "JetBrains Mono", monospace;
   font-size: 12.5px;
   font-weight: 600;
-  color: #11111b;
+  color: var(--on-accent);
   background: var(--atlas-accent);
   border: none;
   border-radius: 8px;
@@ -193,11 +184,10 @@
   height: 76vh;
   min-height: 540px;
   background: var(--atlas-bg);
-  border-radius: 12px;
+  border-radius: 20px;
   border: 1px solid var(--atlas-border);
   overflow: hidden;
   cursor: grab;
-  box-shadow: inset 0 0 50px rgba(0, 0, 0, 0.25);
 }
 
 #atlas-container:active {
@@ -385,7 +375,7 @@
   display: inline-block;
   padding: 7px 14px;
   background: var(--atlas-accent);
-  color: #11111b;
+  color: var(--on-accent);
   border-radius: 8px;
   text-decoration: none;
   font-size: 12px;
@@ -412,7 +402,7 @@
   align-items: center;
   justify-content: center;
   height: 100%;
-  color: #f38ba8;
+  color: #D03B3B;
   font-size: 0.9rem;
 }
 

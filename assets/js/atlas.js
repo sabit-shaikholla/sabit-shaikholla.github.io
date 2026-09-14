@@ -29,20 +29,17 @@ class Atlas {
 
     /* ---------------- Theme ---------------- */
 
+    // Canvas colors follow the site design tokens (design-system.css)
     theme() {
         const dark = document.documentElement.dataset.theme !== 'light';
-        return dark ? {
-            bg: '#1e1e2e',
-            dot: 'rgba(205, 214, 244, 0.9)',
-            contour: 'rgba(147, 153, 178, 0.14)',
-            dimOpacity: 0.12,
-            ring: '#ffffff'
-        } : {
-            bg: '#eff1f5',
-            dot: 'rgba(76, 79, 105, 0.9)',
-            contour: 'rgba(108, 111, 133, 0.16)',
-            dimOpacity: 0.15,
-            ring: '#1e1e2e'
+        const css = getComputedStyle(document.documentElement);
+        const token = (name, fallback) => css.getPropertyValue(name).trim() || fallback;
+        return {
+            bg: token('--surface', dark ? '#16181B' : '#F1F3F5'),
+            dot: token('--ink-2', dark ? '#A3A9B1' : '#5B6069'),
+            contour: dark ? 'rgba(255, 255, 255, 0.07)' : 'rgba(21, 23, 26, 0.09)',
+            dimOpacity: dark ? 0.12 : 0.15,
+            ring: token('--ink', dark ? '#F2F4F6' : '#15171A')
         };
     }
 
@@ -156,7 +153,7 @@ class Atlas {
     }
 
     color(chunk) {
-        return this.skills[chunk.skill]?.color || '#9399b2';
+        return this.skills[chunk.skill]?.color || '#7A808A';
     }
 
     draw() {
@@ -294,7 +291,7 @@ class Atlas {
             .sort((a, b) => b[1] - a[1])
             .map(([id, n]) => {
                 const s = this.skills[id];
-                return `<div class="atlas-legend-item"><span class="atlas-dot" style="background:${s.color}; box-shadow: 0 0 8px ${s.color};"></span>${this.escape(s.name)} <span class="atlas-legend-count">${n}</span></div>`;
+                return `<div class="atlas-legend-item"><span class="atlas-dot" style="background:${s.color}"></span>${this.escape(s.name)} <span class="atlas-legend-count">${n}</span></div>`;
             }).join('');
     }
 
@@ -389,7 +386,7 @@ class Atlas {
                 const skill = this.skills[c.skill];
                 const pct = Math.round(Math.max(0, s.sim) * 100);
                 return `<button class="atlas-result" data-i="${s.i}">
-                    <span class="atlas-result-bar" style="width:${pct}%; background:${skill?.color || '#9399b2'}"></span>
+                    <span class="atlas-result-bar" style="width:${pct}%; background:${skill?.color || '#7A808A'}"></span>
                     <span class="atlas-result-sim">${s.sim.toFixed(2)}</span>
                     <span class="atlas-result-body"><b>${this.escape(c.title)}</b>${c.heading ? ' § ' + this.escape(c.heading) : ''}<br><span class="atlas-result-text">${this.escape(c.text.slice(0, 140))}…</span></span>
                 </button>`;
