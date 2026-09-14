@@ -1,0 +1,261 @@
+{
+  "_readme": "Single source of truth for /career/: the page, the trajectory chart, the Ask my career index (npm run build:career) and JSON-LD. Dates are YYYY-MM; end null means current. Entries and roles are newest first. Bullets may contain inline <b>.",
+  "profile": {
+    "name": "Sabit Shaikholla",
+    "eyebrow": "Career · Almaty, Kazakhstan",
+    "headline": "From telecom systems",
+    "headlineMuted": "to production AI.",
+    "lede": "AI/LLM and Forward Deployed Engineer at Netcracker, and solution architect for digital channels. I build RAG and agent systems over internal company data and run LLMs on our own hardware. Before that: telecom platforms used by millions, and research on how industry adopts new technology.",
+    "status": "Open to AI/LLM and forward deployed roles",
+    "email": "saba.shaiholla@gmail.com",
+    "timezone": "Almaty (UTC+5)",
+    "links": [
+      {"label": "LinkedIn", "url": "https://www.linkedin.com/in/sabit-shaikholla"},
+      {"label": "GitHub", "url": "https://github.com/sabit-shaikholla"},
+      {"label": "ORCID", "url": "https://orcid.org/0000-0003-3690-7328"},
+      {"label": "Google Scholar", "url": "https://scholar.google.com/citations?user=Xmf7VY4AAAAJ"}
+    ]
+  },
+  "specs": [
+    {"value": "3M+", "label": "monthly active users on the SuperApp platforms I led", "ref": "kcell-lead", "org": "Kcell"},
+    {"value": "99.99%", "label": "uptime after the SuperApp architecture redesign", "ref": "kcell-lead", "org": "Kcell"},
+    {"value": "0.89", "label": "RAGAS faithfulness on a 15K-query benchmark", "ref": "nc-ai", "org": "Netcracker"},
+    {"value": "100+", "unit": "tok/s", "label": "Kimi-K2.6 served on SGLang, on our own hardware", "ref": "nc-ai", "org": "Netcracker"},
+    {"value": "522", "label": "citations across eight papers on Google Scholar", "ref": "research", "org": "Research"}
+  ],
+  "entries": [
+    {
+      "id": "netcracker", "kind": "work", "org": "Netcracker Technology", "mono": "NC", "place": "Waltham, MA, USA · Remote",
+      "roles": [
+        {
+          "id": "nc-ai", "rank": "AI/LLM Engineer", "title": "Forward Deployed Engineer", "start": "2026-01", "end": null,
+          "transition": "In parallel · since Jan 2026",
+          "summary": "Building and running on-premise LLM infrastructure for internal engineering platforms.",
+          "wins": [
+            "Reached <b>100+ tokens/s</b> and cut time-to-first-token by <b>52%</b> against baseline by deploying Kimi-K2.6 (MoE) on SGLang and GPT-OSS 120B on vLLM, on-premise; self-hosted models from embeddings up to 1T parameters.",
+            "Cut hallucination rate by <b>73%</b> and improved internal search relevance by <b>65%</b> with enterprise RAG over 100+ code repositories, 1,000+ Confluence pages and 5,000+ documents.",
+            "Held <b>0.89 faithfulness</b>, 0.92 answer relevance, 0.86 context precision and 0.84 context recall on a 15K-query benchmark with an automated RAGAS evaluation loop on every pipeline change.",
+            "Recovered answers that nearest-neighbour search missed in mixed-format documents, using agents that decide what to read themselves: scan, deep dive, backtrack.",
+            "Replaced hand-copying of agent skills between projects with a marketplace on APM (Agent Package Manager): skills as installable packages with versioning and dependency resolution."
+          ],
+          "stack": ["SGLang", "vLLM", "Kimi-K2.6", "GPT-OSS", "RAG", "RAGAS", "Agents", "APM"],
+          "related": ["agentic-file-query", "corrective-rag-openevals", "gemini-api-file-search-tool"],
+          "chart": {"lane": "ai", "label": "AI/LLM Engineer", "short": "FDE"}
+        },
+        {
+          "id": "nc-sa", "rank": "Senior Systems Engineer", "title": "Solution Architect, Digital Channels", "start": "2025-08", "end": null,
+          "transition": "New programme · Aug 2025",
+          "summary": "du digital transformation programme. Own the mobile and web applications end to end, from requirements elicitation through production release and monitoring, plus the solution architecture behind them.",
+          "link": {"url": "https://www.du.ae/personal", "label": "du.ae"},
+          "wins": [
+            "Cut time-to-market from <b>8 weeks to 4</b> by merging solution delivery for mobile, web and self-care into a single intake, design path and release train.",
+            "Raised throughput at the design and solutioning stage by <b>40%</b> by owning the cross-stream work that used to fall between teams: requirements sign-off, interface contracts and dependency resolution.",
+            "Aligned <b>5 delivery streams</b> on one architecture baseline by owning the target solution architecture for digital channels: BSS/OSS integration design (Order Management, Product Catalog, Billing, CRM), API contracts and non-functional requirements.",
+            "Halved the build effort for every new customer journey, one build instead of two, by consolidating mobile and web onto a shared API layer.",
+            "Cut clarification loops between business and delivery by <b>50%</b> by turning business requirements into specifications engineering can build without a second pass.",
+            "Caught <b>90%</b> of digital-channel defects before production and cut MTTR by <b>60%</b> by carrying every release through to production and owning post-release monitoring."
+          ],
+          "stack": ["Solution architecture", "BSS/OSS", "API contracts", "Non-functional requirements"],
+          "related": ["adr"],
+          "chart": {"lane": "sys", "label": "Netcracker · du", "short": "du", "sub": "Netcracker Technology · du programme"}
+        },
+        {
+          "id": "nc-e2e", "rank": "Senior Systems Engineer", "title": "E2E Delivery Owner, Mobile & Web", "start": "2023-04", "end": "2025-07",
+          "summary": "Nuuday digital transformation programme. Owned the mobile and web applications end to end, from requirements elicitation through production release, monitoring and test.",
+          "link": {"url": "https://yousee.dk/", "label": "yousee.dk"},
+          "wins": [
+            "Ran the full delivery cycle for customer-facing mobile and web: requirements with business stakeholders → technical specifications → build coordination → E2E test → production release → post-release monitoring.",
+            "Architected an event-driven integration layer connecting BSS/OSS modules (Order Management, Provisioning, Billing, CRM) to the new self-service portal; order-to-activation <b>70% faster</b>.",
+            "Designed and delivered a cloud-native feature-flag framework (Kafka + Redis Streams) for a <b>2M+ DAU</b> web app: 15+ concurrent features, release cycle from <b>6 weeks to 4 days</b>, rollback incidents down 80%.",
+            "Established the E2E testing framework across 30+ microservices handling billing, ordering and customer data: 95% test automation coverage, production defects down <b>75%</b>."
+          ],
+          "stack": ["Kafka", "Redis Streams", "E2E testing", "Microservices", "BSS/OSS"],
+          "related": [],
+          "chart": {"lane": "sys", "label": "Netcracker · Nuuday", "short": "Nuuday", "end": "2025-08", "sub": "Netcracker Technology · Nuuday programme"}
+        }
+      ]
+    },
+    {
+      "id": "kcell", "kind": "work", "org": "Kcell", "mono": "KC", "place": "Almaty, Kazakhstan",
+      "about": "Leading mobile telecom provider in Kazakhstan, building a SuperApp ecosystem across payments, e-commerce and telecom services ($1.32B+ market capitalization).",
+      "links": [
+        {"url": "https://www.kcell.kz/en/home", "label": "kcell.kz"},
+        {"url": "https://activ.kz/en/home", "label": "activ.kz"}
+      ],
+      "roles": [
+        {
+          "id": "kcell-lead", "title": "Lead Systems Engineer", "start": "2022-07", "end": "2023-04",
+          "wins": [
+            "Led the architectural redesign of the SuperApp ecosystem for <b>3M+ monthly active users</b>: <b>99.99% uptime</b>, latency down 60%.",
+            "Raised team productivity by <b>15%</b> leading <b>10 engineers</b> running the Activ and Kcell SuperApp mobile and web platforms.",
+            "Led the migration of the legacy monolithic billing system to microservices, cutting operating costs by <b>$300K a year</b> and improving response time by 65%.",
+            "Cut user complaints by <b>85%</b> and raised NPS from 2.5 to 4.1 (out of 5.0) within 3 months with NLP and data analytics systems.",
+            "Built health monitoring for a distributed stack of 20+ components, catching issues early and cutting outages by <b>70%</b>.",
+            "Coordinated design and development with infrastructure systems (BSS/OSS, Enterprise Service Bus, asynchronous product ordering, high-performance application server, CVM) to improve interoperability."
+          ],
+          "stack": ["Team leadership", "Architecture", "Microservices", "Monitoring", "NLP", "BSS/OSS"],
+          "related": ["adr"],
+          "chart": {"lane": "sys", "label": "Kcell · Lead", "short": "Lead"}
+        },
+        {
+          "id": "kcell-senior", "title": "Senior Systems Engineer", "start": "2022-06", "end": "2022-07",
+          "wins": [
+            "Built an API gateway integrating 20+ internal and external services; integration incidents down <b>40%</b>.",
+            "Established DevOps practices across 6 teams: deployments from bi-weekly to daily, MTTR down <b>60%</b>.",
+            "Automated testing with Postman across 15 microservices and 100+ APIs, cutting QA cycle time by 70% and catching <b>95%</b> of bugs before deployment."
+          ],
+          "stack": ["Microservices", "API gateway", "DevOps", "Postman"],
+          "related": ["ecommerce-microservices-project", "java-logging-best-practices"],
+          "chart": {"lane": "sys", "label": "Senior"}
+        },
+        {
+          "id": "kcell-se", "title": "Systems Engineer", "start": "2021-09", "end": "2022-06",
+          "wins": [
+            "Led the end-to-end redesign of the customer self-service portal for <b>6M+ users</b>: satisfaction score from 6.7 to 8.3, support tickets down <b>45%</b>.",
+            "Streamlined the release pipeline for the iOS, Android and web SuperApp across 6 teams and 30+ features: time-to-market from <b>3 months to 3 weeks</b> at a 99.9% crash-free rate.",
+            "Built an automated UAT framework for the self-service portal covering 70+ critical scenarios: testing cycles from 2 weeks to 3 days, defect detection up 85%.",
+            "Implemented feature flags for a progressive web app serving 2M+ daily users: 15+ features developed in parallel, release cycle from 6 weeks to 1 week.",
+            "Sped up project timelines by 15% by helping plan, design and build new applications and enhancements to existing ones."
+          ],
+          "stack": ["Self-service portal", "UAT automation", "Release pipeline", "Feature flags"],
+          "related": [],
+          "chart": {"lane": "sys", "label": "Kcell · Systems", "short": "Kcell"}
+        }
+      ]
+    },
+    {
+      "id": "fh-dortmund", "kind": "education", "org": "University of Applied Sciences and Arts Dortmund", "mono": "FH", "place": "Dortmund, Germany",
+      "roles": [
+        {
+          "id": "fh-dortmund", "title": "Computer Science (Exchange Semester)", "start": "2021-04", "end": "2021-08",
+          "wins": [
+            "Full scholarship and stipend from <b>Erasmus Mundus</b>, awarded through a rigorous entrance exam with a <b>5.4% admission rate</b>.",
+            "Coursework: IoT and Edge Computing, Software-Intensive Solutions, Usability Engineering, Trends in Scaled Agile Framework.",
+            "One of Germany's leading universities of applied sciences, known for engineering, computer science and design."
+          ],
+          "stack": [], "related": [],
+          "chart": {"lane": "edu", "row": 1, "label": "FH Dortmund", "outside": true, "sub": "University of Applied Sciences and Arts Dortmund · Erasmus Mundus scholarship"}
+        }
+      ]
+    },
+    {
+      "id": "nu-ra", "kind": "research", "org": "Startup at Nazarbayev University", "mono": "NU", "place": "Astana, Kazakhstan",
+      "roles": [
+        {
+          "id": "nu-ra", "title": "Data Analyst Researcher", "start": "2020-03", "end": "2021-06", "pubs": true,
+          "wins": [
+            "Built predictive process models in Python (pandas, scikit-learn) and SQL for <b>20 SMEs</b>, raising productivity by <b>15%</b> with measurable cost savings.",
+            "Developed a new Industry 4.0 maturity model, using K-Means clustering and exploratory data analysis to segment companies by maturity; <b>adopted by 20 firms</b>.",
+            "Redesigned <b>5 expert systems</b> with multi-criteria decision-making (MCDM) methods and Tableau dashboards, improving strategic decision accuracy by <b>25%</b>.",
+            "Co-authored <b>7 publications</b> with IEEE, Elsevier, MDPI, ACM and Taylor &amp; Francis, turning SME performance data into analysis and visualizations on Industry 4.0 and the economic impact of Big Data."
+          ],
+          "stack": ["Python", "pandas", "scikit-learn", "SQL", "K-Means", "MCDM", "Tableau"],
+          "related": [],
+          "chart": {"lane": "res", "label": "Data Analyst Researcher", "short": "NU"}
+        }
+      ]
+    },
+    {
+      "id": "nu-meng", "kind": "education", "org": "Nazarbayev University", "mono": "NU", "place": "Astana, Kazakhstan",
+      "roles": [
+        {
+          "id": "nu-meng", "title": "Master of Engineering Management", "start": "2019-08", "end": "2021-06",
+          "wins": [
+            "Full <b>government scholarship and stipend</b>, awarded on entrance exam results.",
+            "Capstone: <b>Maturity Assessment in Industry 4.0</b>, a comparative analysis of oil and gas companies in Kazakhstan and Norway; published in 2022 in the Journal of Industrial Integration and Management.",
+            "Coursework: Project Management, Operations and Process Management, Engineering Economy, Advanced Statistics and Probability, Big Data and Information Management, Engineering Decision Tools."
+          ],
+          "stack": [], "related": [],
+          "chart": {"lane": "edu", "label": "M.Eng. Management", "short": "M.Eng."}
+        }
+      ]
+    },
+    {
+      "id": "nu-beng", "kind": "education", "org": "Nazarbayev University", "mono": "NU", "place": "Astana, Kazakhstan",
+      "roles": [
+        {
+          "id": "nu-beng", "title": "B.Eng. Electrical and Electronic Engineering", "start": "2015-08", "end": "2019-06",
+          "wins": [
+            "Capstone: <b>Drone Autopilot System for Vehicular Networks Using VLC</b> (visible light communication).",
+            "First paper: <b>Industry 4.0: Redefining Manufacturing in Kazakhstan</b>, presented at ICACT 2019.",
+            "Activities and societies: IEEE, ACM, SPE and IET student chapters.",
+            "Coursework: Data Communication, Software Engineering, Deep Learning Machines, Industry 4.0, Introduction to Big Data, Internet of Things, Project Management.",
+            "Nazarbayev University is ranked among the top 300 universities worldwide, with strong STEM programs and international research partnerships."
+          ],
+          "stack": [], "related": [],
+          "chart": {"lane": "edu", "label": "B.Eng., Nazarbayev University", "short": "B.Eng."}
+        }
+      ]
+    }
+  ],
+  "research": {
+    "lede": "Before building ML systems, I studied how companies adopt them: Industry 4.0 maturity, SME readiness in Kazakhstan, and a maturity scale for machine learning.",
+    "citations": 522, "hIndex": 6, "i10Index": 4, "asOf": "Google Scholar, September 2026",
+    "orcid": "0000-0003-3690-7328",
+    "scholar": "https://scholar.google.com/citations?user=Xmf7VY4AAAAJ"
+  },
+  "publications": [
+    {"id": "p-cogent", "ym": "2022-02", "owner": "nu-ra", "type": "Journal", "cites": 200, "doi": "10.1080/23311916.2022.2034264",
+     "title": "Industry 4.0: Clustering of concepts and characteristics", "venue": "Cogent Engineering 9(1)",
+     "authors": ["Z. Suleiman", "S. Shaikholla", "D. Dikhanbayeva", "E. Shehab", "A. Turkyilmaz"]},
+    {"id": "p-jiim", "ym": "2022-10", "owner": "nu-meng", "type": "Journal", "cites": 7, "href": "https://scholar.google.com/citations?user=Xmf7VY4AAAAJ",
+     "title": "Maturity assessment of Industry 4.0 implementation in Kazakhstani and Norwegian oil and gas contexts", "venue": "Journal of Industrial Integration and Management 7(4)",
+     "authors": ["I. Beisekenov", "Z. Suleiman", "A. Tokbergenova", "S. Shaikholla", "et al."]},
+    {"id": "p-mlms", "ym": "2021-07", "owner": "fh-dortmund", "type": "Conference", "cites": null, "href": "https://owncloud.idial.institute/s/pmR4cZ2iYDXjgD8",
+     "title": "Development of Machine Learning Maturity Scale (MLMS) Framework in the Context of Industry 4.0", "venue": "Dortmund International Research Conference 2021",
+     "authors": ["S. Shaikholla"]},
+    {"id": "p-sist", "ym": "2021-04", "owner": "nu-ra", "type": "Conference", "cites": 4, "doi": "10.1109/SIST50301.2021.9466002",
+     "title": "Impact of COVID-19 on Industry 4.0 Implementation: Kazakhstan Industry Case", "venue": "IEEE SIST 2021",
+     "authors": ["S. Shaikholla", "D. Dikhanbayeva", "Z. Suleiman", "E. Shehab", "A. Turkyilmaz"]},
+    {"id": "p-cirp", "ym": "2021-02", "owner": "nu-ra", "type": "Journal", "cites": 140, "doi": "10.1016/j.procir.2021.01.077",
+     "title": "Industry 4.0: Challenges and opportunities for Kazakhstan SMEs", "venue": "Procedia CIRP 96",
+     "authors": ["A. Turkyilmaz", "D. Dikhanbayeva", "Z. Suleiman", "S. Shaikholla", "E. Shehab"]},
+    {"id": "p-ieim", "ym": "2021-01", "owner": "nu-ra", "type": "Conference", "cites": 12, "doi": "10.1145/3447432.3447434",
+     "title": "Readiness Assessment of SMEs in Transitional Economies: Introduction of Industry 4.0", "venue": "ACM IEIM 2021",
+     "authors": ["Z. Suleiman", "D. Dikhanbayeva", "S. Shaikholla", "A. Turkyilmaz"]},
+    {"id": "p-sust", "ym": "2020-11", "owner": "nu-ra", "type": "Journal", "cites": 143, "doi": "10.3390/su12239927",
+     "title": "Assessment of Industry 4.0 Maturity Models by Design Principles", "venue": "Sustainability 12(23)",
+     "authors": ["D. Dikhanbayeva", "S. Shaikholla", "Z. Suleiman", "A. Turkyilmaz"]},
+    {"id": "p-icact", "ym": "2019-02", "owner": "nu-beng", "type": "Conference", "cites": 4, "doi": "10.23919/ICACT.2019.8701937",
+     "title": "Industry 4.0: Redefining Manufacturing in Kazakhstan", "venue": "IEEE ICACT 2019",
+     "authors": ["S. Shaiholla", "A. Bekov", "I. A. Ukaegbu"]}
+  ],
+  "skills": [
+    {"group": "AI & LLM", "items": [
+      {"name": "RAG", "roles": ["nc-ai"], "posts": ["agentic-file-query", "corrective-rag-openevals", "gemini-api-file-search-tool", "ai-document-engine-rag"], "note": "Enterprise RAG in production at Netcracker, plus four write-ups on retrieval design."},
+      {"name": "LLM evaluation", "roles": ["nc-ai"], "posts": ["corrective-rag-openevals"], "note": "A RAGAS evaluation loop in production; OpenEvals in a Corrective RAG build."},
+      {"name": "Model serving", "roles": ["nc-ai"], "posts": [], "note": "Kimi-K2.6 on SGLang and GPT-OSS 120B on vLLM, on our own hardware."},
+      {"name": "Agents", "roles": ["nc-ai"], "posts": ["agentic-file-query", "ai-news-agent"], "note": "An agent skills marketplace on APM; agent builds with Google ADK and Pydantic-AI."}
+    ]},
+    {"group": "Backend", "items": [
+      {"name": "Java & Spring Boot", "roles": ["kcell-senior"], "posts": ["ecommerce-microservices-project", "football-oracle", "java-logging-best-practices"]},
+      {"name": "Kafka & Redis", "roles": ["nc-e2e"], "posts": ["ecommerce-microservices-project"]},
+      {"name": "Microservices", "roles": ["nc-sa", "nc-e2e", "kcell-lead", "kcell-senior"], "posts": ["ecommerce-microservices-project"]},
+      {"name": "Python", "roles": ["nc-ai", "nu-ra"], "posts": ["agentic-file-query", "ai-news-agent", "ai-document-engine-rag"]}
+    ]},
+    {"group": "Delivery", "items": [
+      {"name": "Team leadership", "roles": ["kcell-lead"], "posts": []},
+      {"name": "Requirements & E2E delivery", "roles": ["nc-sa", "nc-e2e", "kcell-se"], "posts": []},
+      {"name": "CI/CD & DevOps", "roles": ["kcell-senior", "kcell-se"], "posts": ["oracle-cloud-setup-gemini-tool"]},
+      {"name": "Testing", "roles": ["nc-sa", "nc-e2e", "kcell-senior", "kcell-se"], "posts": []},
+      {"name": "Architecture", "roles": ["nc-sa", "kcell-lead", "kcell-senior"], "posts": ["adr"]}
+    ]},
+    {"group": "Telecom & research", "items": [
+      {"name": "BSS/OSS integration", "roles": ["nc-sa", "nc-e2e", "kcell-lead"], "posts": []},
+      {"name": "Reliability", "roles": ["nc-sa", "kcell-lead", "kcell-senior"], "posts": []},
+      {"name": "NLP & analytics", "roles": ["kcell-lead"], "posts": []},
+      {"name": "Industry 4.0 research", "roles": ["nu-ra", "nu-meng", "nu-beng"], "posts": []}
+    ]}
+  ],
+  "languages": [
+    {"name": "Kazakh", "level": "Native", "cefr": 6},
+    {"name": "Russian", "level": "Native", "cefr": 6},
+    {"name": "English", "level": "Professional · C1", "cefr": 5},
+    {"name": "Turkish", "level": "Elementary · A2", "cefr": 2}
+  ],
+  "certifications": [
+    {"name": "Claude Certified Architect – Foundations", "issuer": "Anthropic", "date": "2026-09", "url": "https://www.credly.com/badges/c50e0ec2-61f9-48e7-9d4a-cf4a5bdb24ac/public_url"},
+    {"name": "Java Development", "issuer": "EPAM Systems · Bootcamp", "date": "2024-07", "url": "https://certificates.epam.com/certificates/ee2b487c-4d83-439b-bfd4-1271542c2323"}
+  ],
+  "suggestions": ["led a team", "LLM evaluation", "on-prem inference", "solution architecture", "Kafka", "billing"]
+}

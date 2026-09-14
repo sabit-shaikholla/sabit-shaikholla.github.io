@@ -1,0 +1,309 @@
+/* =============================================================================
+   Design system (site-wide)
+   Cool neutrals, one turquoise accent (Kazakh sky blue), hairlines instead of
+   heavy cards, glass only on floating chrome. Instrument Sans for display,
+   the system stack for reading, JetBrains Mono for dates, units and code.
+   Loaded after PaperMod's core CSS, so it maps PaperMod's variables onto these
+   tokens and restyles its components without touching the theme submodule.
+   ========================================================================== */
+
+:root {
+  --ground: #FAFBFC;
+  --surface: #F1F3F5;
+  --raised: #FFFFFF;
+  --ink: #15171A;
+  --ink-2: #5B6069;
+  --ink-3: #7A808A;
+  --hair: rgba(21, 23, 26, .10);
+  --hair-strong: rgba(21, 23, 26, .20);
+  --accent: #08758A;
+  --accent-soft: rgba(8, 117, 138, .11);
+  --on-accent: #FFFFFF;
+  --glass: rgba(250, 251, 252, .74);
+  --shadow: 0 1px 2px rgba(21, 23, 26, .04), 0 12px 32px rgba(21, 23, 26, .08);
+
+  /* Data colors (validated for CVD separation and contrast in both themes) */
+  --lane-ai: #0B8BA3;
+  --lane-sys: #5A5FD8;
+  --lane-res: #BC7612;
+  --lane-edu: #B8508A;
+
+  --display: "Instrument Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --text: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --mono: "JetBrains Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  --ease: cubic-bezier(.28, .11, .32, 1);
+}
+
+:root[data-theme="dark"] {
+  --ground: #0B0C0E;
+  --surface: #16181B;
+  --raised: #1C1F23;
+  --ink: #F2F4F6;
+  --ink-2: #A3A9B1;
+  --ink-3: #858B94;
+  --hair: rgba(255, 255, 255, .10);
+  --hair-strong: rgba(255, 255, 255, .22);
+  --accent: #45C6DB;
+  --accent-soft: rgba(69, 198, 219, .13);
+  --on-accent: #06262C;
+  --glass: rgba(11, 12, 14, .72);
+  --shadow: none;
+
+  --lane-ai: #1FA3BB;
+  --lane-sys: #767BE6;
+  --lane-res: #BF8124;
+  --lane-edu: #C4609A;
+}
+
+/* PaperMod variables -> tokens. Listed with the dark selector too so it beats
+   PaperMod's own :root[data-theme="dark"] block at equal specificity. */
+:root,
+:root[data-theme="light"],
+:root[data-theme="dark"] {
+  --theme: var(--ground);
+  --entry: var(--raised);
+  --primary: var(--ink);
+  --secondary: var(--ink-2);
+  --tertiary: var(--hair-strong);
+  --content: var(--ink);
+  --code-bg: var(--surface);
+  --code-block-bg: #15171A;
+  --border: var(--hair);
+  --radius: 14px;
+  --nav-width: 1200px;
+  --main-width: 740px;
+  --header-height: 60px;
+}
+
+/* ---------- Base ---------- */
+html { scroll-padding-top: 84px; }
+body {
+  font-family: var(--text);
+  background: var(--ground);
+  color: var(--ink);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+.list,
+[data-theme="dark"] .list { background: var(--ground); }
+::selection { background: var(--accent-soft); }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 6px; }
+code, kbd, pre, samp { font-family: var(--mono); }
+
+/* ---------- Header: one sticky glass bar ---------- */
+.header {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background: var(--glass);
+  -webkit-backdrop-filter: saturate(180%) blur(20px);
+  backdrop-filter: saturate(180%) blur(20px);
+  border-bottom: 1px solid var(--hair);
+}
+.logo a {
+  font-family: var(--display);
+  font-size: 18px;
+  font-weight: 600;
+  font-stretch: 92%;
+  letter-spacing: -.01em;
+  color: var(--ink);
+}
+button#theme-toggle { color: var(--ink-2); }
+button#theme-toggle:hover { color: var(--ink); }
+#menu a { font-size: 14px; color: var(--ink-2); transition: color .2s var(--ease); }
+#menu a:hover { color: var(--ink); }
+#menu .active { color: var(--ink); font-weight: 500; border-bottom: 0; text-decoration: none; }
+
+/* ---------- Page and post titles ---------- */
+.page-header h1,
+.post-title,
+.first-entry .entry-header h1,
+.archive-year-header {
+  font-family: var(--display);
+  font-weight: 600;
+  font-stretch: 90%;
+  letter-spacing: -.03em;
+  line-height: 1.06;
+  text-wrap: balance;
+}
+.page-header h1 { font-size: clamp(34px, 5vw, 52px); }
+.page-header .post-description,
+.post-description { color: var(--ink-2); font-size: 19px; line-height: 1.5; margin-top: 12px; }
+.post-title { font-size: clamp(32px, 4.6vw, 48px); margin-bottom: 10px; }
+.post-meta,
+.breadcrumbs {
+  font-family: var(--mono);
+  font-size: 12.5px;
+  color: var(--ink-2);
+}
+.breadcrumbs a { color: var(--ink-2); }
+
+/* ---------- Homepage profile ---------- */
+.main .profile { min-height: calc(100vh - var(--header-height) - var(--footer-height) - var(--gap) * 2); }
+.profile img {
+  border-radius: 50%;
+  box-shadow: 0 0 0 4px var(--ground), 0 0 0 5px var(--hair-strong);
+}
+.profile h1 {
+  font-family: var(--display);
+  font-size: clamp(40px, 6vw, 64px);
+  font-weight: 600;
+  font-stretch: 88%;
+  letter-spacing: -.035em;
+  line-height: 1.02;
+  margin-top: 18px;
+}
+.profile .profile_inner > span {
+  display: block;
+  max-width: 62ch;
+  margin-inline: auto;
+  color: var(--ink-2);
+  font-size: 17px;
+  line-height: 1.6;
+}
+.profile .profile_inner > span strong { color: var(--ink); font-weight: 600; }
+.buttons { gap: 10px; margin-top: 8px; }
+.button {
+  margin: 0;
+  padding: 8px 18px;
+  background: var(--surface);
+  border: 1px solid var(--hair);
+  border-radius: 999px;
+  font-size: 15px;
+  transition: border-color .2s var(--ease), background .2s var(--ease);
+}
+.button:hover { background: var(--raised); border-color: var(--hair-strong); }
+.button-inner { padding: 0; }
+.social-icons a { color: var(--ink-2); transition: color .2s var(--ease); }
+.social-icons a:hover { color: var(--ink); }
+
+/* ---------- Post lists: hairline rows that lift on hover ---------- */
+.post-entry {
+  background: transparent;
+  border: 1px solid var(--hair);
+  border-radius: 20px;
+  padding: 24px 26px;
+  margin-bottom: 14px;
+  transition: border-color .2s var(--ease), background .2s var(--ease), transform .2s var(--ease);
+}
+.post-entry:hover { background: var(--raised); border-color: var(--hair-strong); }
+.post-entry:focus-within { border-color: var(--accent); }
+.entry-header h2 {
+  font-family: var(--display);
+  font-size: 23px;
+  font-weight: 600;
+  font-stretch: 92%;
+  letter-spacing: -.02em;
+  line-height: 1.2;
+}
+.entry-content { color: var(--ink-2); font-size: 15px; line-height: 1.55; }
+.entry-footer { font-family: var(--mono); font-size: 12px; color: var(--ink-3); }
+.entry-cover img { border-radius: 12px; }
+.pagination a { background: var(--ink); color: var(--ground); font-size: 13px; }
+
+/* ---------- Reading ---------- */
+.post-content { font-size: 18px; line-height: 1.72; color: var(--ink); }
+.post-content h1,
+.post-content h2,
+.post-content h3,
+.post-content h4 {
+  font-family: var(--display);
+  font-weight: 600;
+  font-stretch: 94%;
+  letter-spacing: -.02em;
+  line-height: 1.2;
+  text-wrap: balance;
+}
+.post-content h2 { font-size: 30px; margin: 48px 0 16px; }
+.post-content h3 { font-size: 23px; margin: 36px 0 12px; }
+.post-content a,
+.md-content a:not(.anchor) {
+  color: var(--accent);
+  box-shadow: none;
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+  text-decoration-color: color-mix(in srgb, var(--accent) 40%, transparent);
+}
+.post-content a:hover,
+.md-content a:not(.anchor):hover { text-decoration-color: var(--accent); }
+.post-content code {
+  font-size: .86em;
+  padding: .12em .38em;
+  margin: 0 1px;
+  background: var(--surface);
+  border: 1px solid var(--hair);
+  border-radius: 6px;
+}
+.post-content pre code { border: 0; }
+.post-content .highlight:not(table),
+.post-content pre,
+.post-content pre code { border-radius: 14px; }
+[data-theme="dark"] .post-content .highlight:not(table) { box-shadow: inset 0 0 0 1px var(--hair); border-radius: 14px; }
+.post-content blockquote {
+  margin: 28px 0;
+  padding: 2px 0 2px 18px;
+  border-inline-start: 3px solid var(--accent);
+  color: var(--ink-2);
+}
+.post-content table th { color: var(--ink-2); font-weight: 500; }
+.post-content table th,
+.post-content table:not(.highlighttable, .highlight table, .gist .highlight) td { border-bottom: 1px solid var(--hair); }
+.post-content hr { background: var(--hair); height: 1px; }
+.post-content img { border-radius: 12px; }
+details.toc,
+[data-theme="dark"] details.toc {
+  background: var(--surface);
+  border: 0;
+  border-radius: 16px;
+  padding: 10px 14px;
+}
+details.toc summary { font-family: var(--display); font-weight: 600; }
+.toc a { color: var(--ink-2); }
+.toc a:hover { color: var(--ink); }
+
+/* ---------- Post footer ---------- */
+.post-tags a {
+  background: transparent;
+  border: 1px solid var(--hair);
+  border-radius: 999px;
+  color: var(--ink-2);
+  font-size: 13px;
+  line-height: 30px;
+}
+.post-tags a:hover { color: var(--ink); border-color: var(--hair-strong); background: var(--surface); }
+.paginav { background: var(--surface); border-radius: 18px; }
+.paginav .title { font-family: var(--mono); font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: var(--ink-2); }
+.share-buttons svg { color: var(--ink-2); }
+
+/* ---------- Search, archives, taxonomies ---------- */
+.searchbox input {
+  font: 17px var(--text);
+  font-weight: 400;
+  padding: 12px 16px;
+  background: var(--surface);
+  border: 1px solid var(--hair);
+  border-radius: 16px;
+}
+.searchbox input:focus { border-color: var(--accent); box-shadow: 0 0 0 4px var(--accent-soft); }
+.searchResults li { border: 1px solid var(--hair); border-radius: 16px; background: transparent; }
+.searchResults li:focus-within { transform: none; border: 1px solid var(--accent); }
+.archive-meta { font-family: var(--mono); font-size: 12px; color: var(--ink-3); }
+.terms-tags a { background: var(--surface); border: 1px solid var(--hair); border-radius: 999px; padding: 4px 12px; }
+.terms-tags a:hover { border-color: var(--hair-strong); }
+
+/* ---------- Footer ---------- */
+.footer { color: var(--ink-2); font-size: 13px; }
+.footer a { color: var(--ink-2); }
+.footer a:hover { color: var(--ink); }
+.top-link {
+  background: var(--glass);
+  -webkit-backdrop-filter: saturate(180%) blur(20px);
+  backdrop-filter: saturate(180%) blur(20px);
+  border: 1px solid var(--hair);
+  color: var(--ink);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .post-entry, .button, #menu a { transition: none; }
+}

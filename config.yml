@@ -38,9 +38,9 @@ languages:
           name: Portfolio
           url: /portfolio/
           weight: 30
-        - identifier: resume
-          name: Resume
-          url: /resume/
+        - identifier: career
+          name: Career
+          url: /career/
           weight: 35
         - identifier: random
           name: Random
@@ -64,7 +64,6 @@ outputs:
     - HTML
     - RSS
     - JSON
-    - LLMS
   section:
     - HTML
     - JSON
@@ -77,11 +76,6 @@ outputFormats:
     isPlainText: true
     isHTML: false
     permalinkable: true
-  LLMS:
-    mediaType: "text/plain"
-    baseName: "llms"
-    isPlainText: true
-    notAlternative: true
 
 params:
   env: production # to enable google analytics, opengraph, twitter-cards and schema.
@@ -95,6 +89,8 @@ params:
     sameAs:
       - "https://github.com/sabit-shaikholla"
       - "https://www.linkedin.com/in/sabit-shaikholla"
+      - "https://orcid.org/0000-0003-3690-7328"
+      - "https://scholar.google.com/citations?user=Xmf7VY4AAAAJ"
   defaultTheme: dark
   disableThemeToggle: false
 
@@ -165,14 +161,18 @@ params:
         url: /portfolio/
       - name: Random
         url: /random/
-      - name: Resume
-        url: /resume/
+      - name: Career
+        url: /career/
 
   socialIcons:
     - name: github
       url: "https://github.com/sabit-shaikholla"
     - name: linkedin
       url: "https://linkedin.com/in/sabit-shaikholla"
+    - name: orcid
+      url: "https://orcid.org/0000-0003-3690-7328"
+    - name: googlescholar
+      url: "https://scholar.google.com/citations?user=Xmf7VY4AAAAJ"
 
   analytics:
     google:

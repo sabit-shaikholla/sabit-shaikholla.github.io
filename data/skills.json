@@ -4,7 +4,7 @@
       "id": "rag-retrieval",
       "name": "RAG & Retrieval",
       "description": "Retrieval-augmented generation systems: document parsing, chunking, vector search, embeddings, and grounded question answering over private data.",
-      "color": "#89b4fa",
+      "color": "#0B8BA3",
       "tags": ["rag", "vector-search", "docling", "tavily"],
       "categories": ["rag", "rag engineering"]
     },
@@ -12,7 +12,7 @@
       "id": "agentic-systems",
       "name": "Agentic Systems",
       "description": "Autonomous LLM agents: multi-step tool use, planning, and agent orchestration with frameworks like Google ADK and LangGraph.",
-      "color": "#cba6f7",
+      "color": "#5A5FD8",
       "tags": ["adk", "langgraph"],
       "categories": [],
       "posts": ["/portfolio/ai-news-agent/"]
@@ -21,7 +21,7 @@
       "id": "llm-evaluation",
       "name": "LLM Evaluation",
       "description": "Evaluating LLM outputs: automated evals, correctness grading, and feedback loops that make generative systems trustworthy.",
-      "color": "#f9e2af",
+      "color": "#BC7612",
       "tags": ["openevals"],
       "categories": []
     },
@@ -29,7 +29,7 @@
       "id": "llm-engineering",
       "name": "LLM Engineering",
       "description": "Building with large language model APIs: prompt design, structured output with Pydantic, and the Gemini API.",
-      "color": "#94e2d5",
+      "color": "#B8508A",
       "tags": ["llm", "gemini", "pydantic"],
       "categories": ["llm"]
     },
@@ -37,7 +37,7 @@
       "id": "ml-data-science",
       "name": "ML & Data Science",
       "description": "Machine learning and data science: predictive modeling, data analysis, and analytics applications.",
-      "color": "#f5c2e7",
+      "color": "#3E8E41",
       "tags": [],
       "categories": ["ml engineering", "data analysis", "sports analytics"]
     },
@@ -45,7 +45,7 @@
       "id": "backend-cloud",
       "name": "Backend & Cloud",
       "description": "Backend and cloud engineering: Java and Spring Boot services, microservice architecture, databases, Docker, and self-hosted infrastructure.",
-      "color": "#a6e3a1",
+      "color": "#2F7FD1",
       "tags": ["java", "spring boot", "microservices", "postgresql", "api gateway", "event-driven", "docker compose", "oracle cloud", "devops", "nginx", "self-hosting"],
       "categories": ["backend development", "devops", "cloud"]
     },
@@ -53,7 +53,7 @@
       "id": "software-craft",
       "name": "Software Craft",
       "description": "Software craftsmanship: architecture decision records, system design, web tooling, and engineering practices.",
-      "color": "#fab387",
+      "color": "#D0583A",
       "tags": ["software engineering", "system architecture", "solution architecture", "hugo", "web", "github-pages", "static-site", "react"],
       "categories": ["system architecture", "software engineering", "solution architecture", "web development"]
     }

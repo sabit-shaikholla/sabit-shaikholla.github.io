@@ -2,6 +2,32 @@
 
 Personal website built with Hugo (PaperMod), deployed to GitHub Pages via GitHub Actions.
 
+## Design system
+
+`assets/css/extended/design-system.css` holds the site-wide tokens (colors, type, radii)
+and restyles PaperMod's components through its CSS variables, so the theme submodule stays
+untouched. Light values live on `:root`, dark values on `:root[data-theme="dark"]`.
+Typefaces: Instrument Sans (display) and JetBrains Mono (data, code), loaded in
+`layouts/partials/extend_head.html`; body text uses the system font stack.
+
+## Career page (`/career/`)
+
+Everything on the page comes from `data/career.json`: roles, results, publications,
+skills, languages and certifications (newest first, dates as `YYYY-MM`, `end: null` for
+current roles). `layouts/career/list.html` renders it server-side, and
+`assets/js/career.js` adds the trajectory chart, the scroll-drawn timeline, skill
+evidence, citations and **Ask my career**.
+
+Ask my career matches keywords instantly, then loads `all-MiniLM-L6-v2` in the visitor's
+browser (the same model as the Content Atlas) to match by meaning against a prebuilt index.
+After editing `data/career.json`, rebuild the index and commit the output:
+
+```bash
+npm run build:career   # writes static/career/career-index.json + career-vectors.bin
+```
+
+`/resume/` redirects to `/career/`.
+
 ## Knowledge Graph embeddings (optional)
 
 The `/graph/` page combines tag-based links with semantic similarity edges computed from

@@ -1,0 +1,4 @@
+{{- /* "2023-04" -> "Apr 2023"; empty or null -> "Now" */ -}}
+{{- $out := "Now" -}}
+{{- with . }}{{ $out = (time (printf "%s-01" .)).Format "Jan 2006" }}{{ end -}}
+{{- return $out -}}

@@ -1,2 +1,7 @@
 {{- /* Add custom <head> injections here (site-wide). Mermaid loads in
        extend_footer.html only on pages that use it. */ -}}
+{{- /* Design system typefaces: Instrument Sans (display) + JetBrains Mono (data).
+       Body text uses the system stack, so it costs no font download. */ -}}
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wdth,wght@75..100,400..700&family=JetBrains+Mono:wght@400;500&display=swap">

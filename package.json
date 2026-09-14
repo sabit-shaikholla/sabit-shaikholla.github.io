@@ -2,9 +2,10 @@
   "name": "sabit-shaikholla.github.io",
   "private": true,
   "type": "module",
-  "description": "Build tooling for the content atlas (chunk embedding + UMAP projection)",
+  "description": "Build tooling for the content atlas (chunk embedding + UMAP projection) and the Ask my career index",
   "scripts": {
-    "build:atlas": "node scripts/build_atlas.mjs"
+    "build:atlas": "node scripts/build_atlas.mjs",
+    "build:career": "node scripts/build_career.mjs"
   },
   "dependencies": {
     "@huggingface/transformers": "^3.8.1",
