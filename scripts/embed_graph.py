@@ -3,7 +3,7 @@
 Generate semantic similarity edges + embedding-space positions for the
 Knowledge Graph.
 
-- Reads posts from content/{til,portfolio,random} and skill areas from
+- Reads posts from content/{til,portfolio} and skill areas from
   data/skills.json (skills are embedded from their name + description so
   they land in the right semantic neighborhood)
 - Embeds everything with Gemini (gemini-embedding-001) via REST (no deps)
@@ -32,7 +32,7 @@ try:  # macOS framework Pythons ship without CA certs; use certifi if available
 except ImportError:
     pass
 
-SECTIONS = ("til", "portfolio", "random")
+SECTIONS = ("til", "portfolio")
 MODEL = "gemini-embedding-001"
 OUTPUT_DIM = 768
 SIM_THRESHOLD = 0.45       # minimum cosine similarity to become an edge

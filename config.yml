@@ -42,10 +42,6 @@ languages:
           name: Career
           url: /career/
           weight: 35
-        - identifier: random
-          name: Random
-          url: /random/
-          weight: 40
         - identifier: search
           name: Search
           url: /search/
@@ -159,8 +155,6 @@ params:
         url: /til/
       - name: Portfolio
         url: /portfolio/
-      - name: Random
-        url: /random/
       - name: Career
         url: /career/
 

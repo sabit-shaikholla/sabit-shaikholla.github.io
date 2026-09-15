@@ -1,5 +1,5 @@
 {{- /* Get all pages from specific sections */ -}}
-{{- $allPages := where .Site.RegularPages "Section" "in" (slice "til" "portfolio" "random") -}}
+{{- $allPages := where .Site.RegularPages "Section" "in" (slice "til" "portfolio") -}}
 
 {{- /* Build post nodes with metadata for the details panel */ -}}
 {{- $nodes := slice -}}
