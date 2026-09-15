@@ -1,6 +1,7 @@
 {{ define "main" }}
 <article class="post-single">
   <header class="post-header">
+    {{ partial "explore_tabs.html" . }}
     <h1 class="post-title">{{ .Title }}</h1>
     <div class="post-meta">
       <span>Every dot is a paragraph, positioned by semantic similarity and colored by skill area. Search embeds your query in your own browser &mdash; nothing is sent to a server.</span>

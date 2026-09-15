@@ -1,0 +1,23 @@
+/* Explore sub-navigation (Atlas | Graph), styled like the Career page's segmented filters. */
+.explore-tabs {
+  display: inline-flex;
+  gap: 2px;
+  padding: 3px;
+  margin-bottom: 18px;
+  background: var(--surface);
+  border-radius: 10px;
+}
+.explore-tabs a {
+  padding: 5px 14px;
+  border-radius: 8px;
+  font-size: 13px;
+  color: var(--ink-2);
+  text-decoration: none;
+  transition: color .2s var(--ease);
+}
+.explore-tabs a:hover { color: var(--ink); }
+.explore-tabs a[aria-current="page"] {
+  background: var(--raised);
+  color: var(--ink);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, .12);
+}

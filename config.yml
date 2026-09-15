@@ -42,18 +42,14 @@ languages:
           name: Writing
           url: /writing/
           weight: 40
+        - identifier: explore
+          name: Explore
+          url: /explore/
+          weight: 50
         - identifier: search
           name: Search
           url: /search/
-          weight: 50
-        - identifier: graph
-          name: Graph
-          url: /graph/
-          weight: 45
-        - identifier: atlas
-          name: Atlas
-          url: /atlas/
-          weight: 48
+          weight: 60
 
 outputs:
   home:

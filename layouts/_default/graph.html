@@ -1,6 +1,7 @@
 {{ define "main" }}
 <article class="post-single">
   <header class="post-header">
+    {{ partial "explore_tabs.html" . }}
     <h1 class="post-title">{{ .Title }}</h1>
     <div class="post-meta">
       <span>Posts clustered around skill areas. Solid edges share tags; dashed edges are semantic similarity computed with Gemini embeddings. Click a node to inspect it.</span>
@@ -26,7 +27,7 @@
       <div class="graph-stage">
         <!-- Canvas mounts here. NB: force-graph WIPES this container's innerHTML on init,
              so controls/legend/panel must be siblings, not children. -->
-        <div id="graph-container" data-source='{{ "graph/index.json" | relURL }}'></div>
+        <div id="graph-container" data-source='{{ with .OutputFormats.Get "json" }}{{ .RelPermalink }}{{ end }}'></div>
 
         <!-- Controls -->
         <div class="graph-controls">

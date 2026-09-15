@@ -1,0 +1,9 @@
+{{- /* Sub-navigation shared by the Explore pages: Atlas (/explore/) and Graph (/explore/graph/). */ -}}
+{{- $current := .RelPermalink -}}
+<nav class="explore-tabs" aria-label="Explore views">
+  {{- range slice "/explore" "/explore/graph" }}
+    {{- with site.GetPage . }}
+  <a href="{{ .RelPermalink }}"{{ if eq .RelPermalink $current }} aria-current="page"{{ end }}>{{ .LinkTitle }}</a>
+    {{- end }}
+  {{- end }}
+</nav>
