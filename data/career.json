@@ -129,8 +129,7 @@
         {
           "id": "fh-dortmund", "title": "Computer Science (Exchange Semester)", "start": "2021-04", "end": "2021-08",
           "wins": [
-            "Full scholarship and stipend from <b>Erasmus Mundus</b>, awarded through an entrance exam with a <b>5.4% admission rate</b>.",
-            "Coursework: IoT and Edge Computing, Software-Intensive Solutions, Usability Engineering, Trends in Scaled Agile Framework."
+            "Full scholarship and stipend from <b>Erasmus Mundus</b>, awarded through an entrance exam with a <b>5.4% admission rate</b>."
           ],
           "stack": [], "related": [],
           "chart": {"lane": "edu", "row": 1, "label": "FH Dortmund", "outside": true, "sub": "University of Applied Sciences and Arts Dortmund · Erasmus Mundus scholarship"}
@@ -161,8 +160,7 @@
           "id": "nu-meng", "title": "Master of Engineering Management", "start": "2019-08", "end": "2021-06",
           "wins": [
             "Full <b>government scholarship and stipend</b>, awarded on entrance exam results.",
-            "Capstone: <b>Maturity Assessment in Industry 4.0</b>, a comparative analysis of oil and gas companies in Kazakhstan and Norway; published in 2022 in the Journal of Industrial Integration and Management.",
-            "Coursework: Project Management, Operations and Process Management, Engineering Economy, Advanced Statistics and Probability, Big Data and Information Management, Engineering Decision Tools."
+            "Capstone: <b>Maturity Assessment in Industry 4.0</b>, a comparative analysis of oil and gas companies in Kazakhstan and Norway; published in 2022 in the Journal of Industrial Integration and Management."
           ],
           "stack": [], "related": [],
           "chart": {"lane": "edu", "label": "M.Eng. Management", "short": "M.Eng."}
@@ -176,9 +174,7 @@
           "id": "nu-beng", "title": "B.Eng. Electrical and Electronic Engineering", "start": "2015-08", "end": "2019-06",
           "wins": [
             "Capstone: <b>Drone Autopilot System for Vehicular Networks Using VLC</b> (visible light communication).",
-            "First paper: <b>Industry 4.0: Redefining Manufacturing in Kazakhstan</b>, presented at ICACT 2019.",
-            "Activities and societies: IEEE, ACM, SPE and IET student chapters.",
-            "Coursework: Data Communication, Software Engineering, Deep Learning Machines, Industry 4.0, Introduction to Big Data, Internet of Things, Project Management."
+            "First paper: <b>Industry 4.0: Redefining Manufacturing in Kazakhstan</b>, presented at ICACT 2019."
           ],
           "stack": [], "related": [],
           "chart": {"lane": "edu", "label": "B.Eng., Nazarbayev University", "short": "B.Eng."}
