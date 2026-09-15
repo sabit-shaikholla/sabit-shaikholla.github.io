@@ -1,5 +1,6 @@
 ---
-title: "How I Setup Oracle Cloud Always Free Instance for Gemini API File Search Tool"
+title: "Deploying the Gemini File Search Tool on Oracle Cloud's Free Tier"
+aliases: ["/portfolio/oracle-cloud-setup-gemini-tool/"]
 date: 2025-11-19
 description: "A step-by-step guide on setting up an Oracle Cloud Always Free instance, configuring Nginx, SSL, and DuckDNS for the Gemini API File Search Tool."
 summary: "Learn how to deploy a Python application on Oracle Cloud Always Free tier, including VCN setup, security rules, Nginx reverse proxy, Let's Encrypt SSL, and automated deployment."
@@ -10,7 +11,7 @@ showToc: true
 
 In this post, I will share the detailed steps I took to set up the infrastructure for my [Gemini API File Search Tool](https://github.com/sabit-shaikholla/gemini-api-file-search-tool). I chose Oracle Cloud's Always Free Tier because it offers generous resources that are perfect for hosting small to medium-sized projects without incurring costs.
 
-For more details about Gemini File Search Tool, you can check my other blog post [Revolutionizing RAG: Why Gemini File Search Tool is the great RAG-as-a-Service](/portfolio/gemini-file-search-tool).
+For more details about Gemini File Search Tool, you can check my other blog post [Gemini File Search Tool: RAG as a Managed Service](/projects/gemini-api-file-search-tool/).
 
 ### **Architecture Overview**
 

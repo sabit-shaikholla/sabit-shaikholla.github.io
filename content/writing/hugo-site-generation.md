@@ -1,5 +1,6 @@
 ---
 title: "Creating a Personal Website with Hugo"
+aliases: ["/til/hugo-site-generation/"]
 date: 2025-02-14
 author: "Sabit Shaikholla"
 description: "A comprehensive guide on creating a personal website using Hugo static site generator with PaperMod theme, including installation, configuration, and deployment to GitHub Pages"

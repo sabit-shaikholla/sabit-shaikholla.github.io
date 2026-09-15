@@ -7,6 +7,10 @@ pygmentsUseClasses: true
 enableInlineShortcodes: true
 enableRobotsTXT: true
 enableGitInfo: true
+# "Updated" dates come only from a post's own lastmod front matter, never from git commits,
+# so bulk commits (renames, moves) don't mark every post as updated.
+frontmatter:
+  lastmod: ["lastmod", "date"]
 buildDrafts: false
 buildFuture: false
 buildExpired: false
@@ -30,34 +34,26 @@ languages:
           name: Home
           url: /
           weight: 10
-        - identifier: til
-          name: TIL
-          url: /til/
-          weight: 20
-        - identifier: portfolio
-          name: Portfolio
-          url: /portfolio/
-          weight: 30
         - identifier: career
           name: Career
           url: /career/
-          weight: 35
-        - identifier: random
-          name: Random
-          url: /random/
+          weight: 20
+        - identifier: projects
+          name: Projects
+          url: /projects/
+          weight: 30
+        - identifier: writing
+          name: Writing
+          url: /writing/
           weight: 40
+        - identifier: explore
+          name: Explore
+          url: /explore/
+          weight: 50
         - identifier: search
           name: Search
           url: /search/
-          weight: 50
-        - identifier: graph
-          name: Graph
-          url: /graph/
-          weight: 45
-        - identifier: atlas
-          name: Atlas
-          url: /atlas/
-          weight: 48
+          weight: 60
 
 outputs:
   home:
@@ -155,14 +151,12 @@ params:
     imageHeight: 120
     imageTitle: Profile Picture
     buttons:
-      - name: TIL
-        url: /til/
-      - name: Portfolio
-        url: /portfolio/
-      - name: Random
-        url: /random/
       - name: Career
         url: /career/
+      - name: Projects
+        url: /projects/
+      - name: Writing
+        url: /writing/
 
   socialIcons:
     - name: github

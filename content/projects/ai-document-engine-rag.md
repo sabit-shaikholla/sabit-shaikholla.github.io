@@ -1,5 +1,6 @@
 ---
-title: "AI Document Analysis Engine using RAG"
+title: "AI Document Analysis Engine: Type-Safe RAG with Pydantic and Gemini"
+aliases: ["/portfolio/ai-document-engine-rag/"]
 date: 2025-03-02
 description: "A type-safe AI document analysis engine built with RAG"
 summary: "A type-safe AI document analysis engine built with RAG"

@@ -22,8 +22,9 @@
 {{- delimit . "&nbsp;·&nbsp;" | safeHTML -}}
 {{- end -}}
 
-{{- /* Show "Updated on" when the last modification date differs from the
-       publication date (populated automatically via git via enableGitInfo). */ -}}
+{{- /* Show "Updated" only when a post sets `lastmod` in its front matter to a date other than
+       its publication date. Git commit dates are ignored (frontmatter.lastmod in config.yml),
+       so bulk commits such as renames don't mark every post as updated. */ -}}
 {{- if and (not .Lastmod.IsZero) (not .Date.IsZero) (ne (.Lastmod.Format "2006-01-02") (.Date.Format "2006-01-02")) }}
 <span class="post-lastmod" title="{{ .Lastmod }}">· Updated {{ .Lastmod | time.Format (default ":date_long" site.Params.DateFormat) }}</span>
 {{- end }}

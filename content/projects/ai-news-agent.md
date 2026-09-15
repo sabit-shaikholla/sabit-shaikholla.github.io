@@ -1,5 +1,6 @@
 ---
-title: "AI News Research Agent"
+title: "AI News Research Agent: Pydantic-AI, Gemini and Tavily"
+aliases: ["/portfolio/ai-news-agent/"]
 date: 2025-02-19
 description: "A type-safe AI news research agent built with Pydantic-AI, Gemini 2.0 Flash, and Tavily Search"
 summary: "A type-safe AI news research agent built with Pydantic-AI, Gemini 2.0 Flash, and Tavily Search"

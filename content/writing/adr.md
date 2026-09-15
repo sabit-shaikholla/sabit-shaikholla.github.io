@@ -1,5 +1,6 @@
 ---
 title: "Documenting the 'Why': An Introduction to Architecture Decision Records"
+aliases: ["/til/adr/"]
 date: 2025-03-26
 author: "Sabit Shaikholla"
 description: "Ever wondered how to keep track of critical architectural decisions in your software projects? Discover how Architecture Decision Records (ADRs) can streamline communication, prevent repeated mistakes, and ensure your team stays aligned and efficient."

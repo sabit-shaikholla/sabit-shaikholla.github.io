@@ -77,7 +77,7 @@
     },
     {
       "id": "kcell", "kind": "work", "org": "Kcell", "mono": "KC", "place": "Almaty, Kazakhstan",
-      "about": "Leading mobile telecom provider in Kazakhstan, building a SuperApp ecosystem across payments, e-commerce and telecom services ($1.32B+ market capitalization).",
+      "about": "Leading mobile telecom provider in Kazakhstan, building a SuperApp ecosystem across payments, e-commerce and telecom services.",
       "links": [
         {"url": "https://www.kcell.kz/en/home", "label": "kcell.kz"},
         {"url": "https://activ.kz/en/home", "label": "activ.kz"}
@@ -89,7 +89,7 @@
             "Led the architectural redesign of the SuperApp ecosystem for <b>3M+ monthly active users</b>: <b>99.99% uptime</b>, latency down 60%.",
             "Raised team productivity by <b>15%</b> leading <b>10 engineers</b> running the Activ and Kcell SuperApp mobile and web platforms.",
             "Led the migration of the legacy monolithic billing system to microservices, cutting operating costs by <b>$300K a year</b> and improving response time by 65%.",
-            "Cut user complaints by <b>85%</b> and raised NPS from 2.5 to 4.1 (out of 5.0) within 3 months with NLP and data analytics systems.",
+            "Cut user complaints by <b>85%</b> and raised NPS from <b>55 to 87</b> within 3 months with NLP and data analytics systems.",
             "Built health monitoring for a distributed stack of 20+ components, catching issues early and cutting outages by <b>70%</b>.",
             "Coordinated design and development with infrastructure systems (BSS/OSS, Enterprise Service Bus, asynchronous product ordering, high-performance application server, CVM) to improve interoperability."
           ],
@@ -129,9 +129,7 @@
         {
           "id": "fh-dortmund", "title": "Computer Science (Exchange Semester)", "start": "2021-04", "end": "2021-08",
           "wins": [
-            "Full scholarship and stipend from <b>Erasmus Mundus</b>, awarded through a rigorous entrance exam with a <b>5.4% admission rate</b>.",
-            "Coursework: IoT and Edge Computing, Software-Intensive Solutions, Usability Engineering, Trends in Scaled Agile Framework.",
-            "One of Germany's leading universities of applied sciences, known for engineering, computer science and design."
+            "Full scholarship and stipend from <b>Erasmus Mundus</b>, awarded through an entrance exam with a <b>5.4% admission rate</b>."
           ],
           "stack": [], "related": [],
           "chart": {"lane": "edu", "row": 1, "label": "FH Dortmund", "outside": true, "sub": "University of Applied Sciences and Arts Dortmund · Erasmus Mundus scholarship"}
@@ -162,8 +160,7 @@
           "id": "nu-meng", "title": "Master of Engineering Management", "start": "2019-08", "end": "2021-06",
           "wins": [
             "Full <b>government scholarship and stipend</b>, awarded on entrance exam results.",
-            "Capstone: <b>Maturity Assessment in Industry 4.0</b>, a comparative analysis of oil and gas companies in Kazakhstan and Norway; published in 2022 in the Journal of Industrial Integration and Management.",
-            "Coursework: Project Management, Operations and Process Management, Engineering Economy, Advanced Statistics and Probability, Big Data and Information Management, Engineering Decision Tools."
+            "Capstone: <b>Maturity Assessment in Industry 4.0</b>, a comparative analysis of oil and gas companies in Kazakhstan and Norway; published in 2022 in the Journal of Industrial Integration and Management."
           ],
           "stack": [], "related": [],
           "chart": {"lane": "edu", "label": "M.Eng. Management", "short": "M.Eng."}
@@ -177,10 +174,7 @@
           "id": "nu-beng", "title": "B.Eng. Electrical and Electronic Engineering", "start": "2015-08", "end": "2019-06",
           "wins": [
             "Capstone: <b>Drone Autopilot System for Vehicular Networks Using VLC</b> (visible light communication).",
-            "First paper: <b>Industry 4.0: Redefining Manufacturing in Kazakhstan</b>, presented at ICACT 2019.",
-            "Activities and societies: IEEE, ACM, SPE and IET student chapters.",
-            "Coursework: Data Communication, Software Engineering, Deep Learning Machines, Industry 4.0, Introduction to Big Data, Internet of Things, Project Management.",
-            "Nazarbayev University is ranked among the top 300 universities worldwide, with strong STEM programs and international research partnerships."
+            "First paper: <b>Industry 4.0: Redefining Manufacturing in Kazakhstan</b>, presented at ICACT 2019."
           ],
           "stack": [], "related": [],
           "chart": {"lane": "edu", "label": "B.Eng., Nazarbayev University", "short": "B.Eng."}

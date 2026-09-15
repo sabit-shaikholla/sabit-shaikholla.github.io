@@ -28,9 +28,15 @@ npm run build:career   # writes static/career/career-index.json + career-vectors
 
 `/resume/` redirects to `/career/`.
 
+## Explore (`/explore/`)
+
+Two views of the site's content, switched by `layouts/partials/explore_tabs.html`:
+the Content Atlas at `/explore/` and the Content Graph at `/explore/graph/`.
+Old `/atlas/` and `/graph/` links redirect.
+
 ## Knowledge Graph embeddings (optional)
 
-The `/graph/` page combines tag-based links with semantic similarity edges computed from
+The Content Graph (`/explore/graph/`) combines tag-based links with semantic similarity edges computed from
 [Gemini embeddings](https://ai.google.dev/gemini-api/docs/embeddings) (`scripts/embed_graph.py`).
 
 ### GitHub Actions (CI)
@@ -74,7 +80,7 @@ in the right semantic neighborhood.
 (`positions` in `embeddings.json`). The "semantic layout" toggle on the graph page
 pins nodes to these embedding-space coordinates instead of the force simulation.
 
-## Content Atlas (`/atlas/`)
+## Content Atlas (`/explore/`)
 
 A chunk-level semantic map: every paragraph is embedded with
 `all-MiniLM-L6-v2` and projected to 2D with UMAP, colored by skill area.

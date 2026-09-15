@@ -1,5 +1,6 @@
 ---
-title: "Enhancing LLM Agent Reliability with Corrective RAG and OpenEvals"
+title: "Corrective RAG Agent: Self-Checking Answers with OpenEvals"
+aliases: ["/portfolio/corrective-rag-openevals/"]
 date: 2025-05-20
 description: "A deep dive into building more reliable LLM agents by combining Corrective Retrieval-Augmented Generation (CRAG) with OpenEvals. Learn how self-checking retrieval, automated evaluation, and iterative refinement can dramatically reduce hallucinations and improve answer accuracy in AI-powered assistants."
 summary: "Learn how combining Corrective RAG and OpenEvals enables LLM agents to verify their sources and answers, resulting in more accurate and reliable AI responses."
