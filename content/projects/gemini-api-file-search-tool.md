@@ -1,5 +1,6 @@
 ---
 title: "Revolutionizing RAG: Why Gemini File Search Tool is the great RAG-as-a-Service"
+aliases: ["/portfolio/gemini-api-file-search-tool/"]
 date: 2025-11-19
 description: "Discover how the Gemini API File Search Tool revolutionizes RAG by offering a fully managed, scalable, and cost-effective RAG-as-a-Service solution for developers."
 summary: "An in-depth look at the Gemini API File Search Tool, a managed RAG solution that simplifies retrieval pipelines, offers semantic search, and provides built-in citations, making it easier for developers to build grounded AI applications."

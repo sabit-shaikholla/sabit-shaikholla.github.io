@@ -1,5 +1,6 @@
 ---
 title: "Football Oracle: A Scalable, AI-Driven Platform for Comprehensive Football Player Analytics"
+aliases: ["/portfolio/football-oracle/"]
 date: 2024-07-06
 description: "A Java-based platform using Spring Boot, React, PostgreSQL, and Gemini Pro API to provide AI-driven football player analytics and insights"
 summary: "A Java-based platform using Spring Boot, React, PostgreSQL, and Gemini Pro API to provide AI-driven football player analytics and insights"

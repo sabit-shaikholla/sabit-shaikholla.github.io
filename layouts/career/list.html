@@ -7,9 +7,9 @@
 {{- $kinds := dict "work" "Work" "education" "Education" "research" "Research" -}}
 {{- $lanes := dict "ai" "AI / LLM" "sys" "Engineering" "res" "Research" "edu" "Education" -}}
 
-{{- /* TIL + Portfolio posts, keyed by file name: related writing, skill evidence, AI lane dots */ -}}
+{{- /* Projects + Writing posts, keyed by file name: related writing, skill evidence, AI lane dots */ -}}
 {{- $posts := dict -}}
-{{- range where site.RegularPages "Section" "in" (slice "til" "portfolio") -}}
+{{- range where site.RegularPages "Section" "in" (slice "projects" "writing") -}}
   {{- if .File -}}
     {{- $tags := apply (.Params.tags | default slice) "lower" "." -}}
     {{- $posts = merge $posts (dict .File.ContentBaseName (dict "t" .LinkTitle "d" (.Date.Format "2006-01") "url" .RelPermalink "ai" (in $tags "ai"))) -}}

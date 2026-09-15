@@ -5,4 +5,4 @@ description: "Personal website of Sabit Shaikholla, AI/LLM Engineer and Forward 
 
 I build RAG and agent systems over internal company data, and deploy LLMs on our own hardware with vLLM and SGLang.
 
-Longer notes live in [Portfolio](/portfolio), shorter ones in [TIL](/til).
+Things I've built are in [Projects](/projects/); notes on engineering practice are in [Writing](/writing/).

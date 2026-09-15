@@ -1,5 +1,6 @@
 ---
 title: "Beyond RAG: Building an AI Agent That Explores Documents Like a Human Researcher"
+aliases: ["/portfolio/agentic-file-query/"]
 date: 2026-02-24
 description: "How I built an agentic document search system that replaces the traditional retrieve-and-generate pipeline with an AI agent that scans, reasons, follows cross-references, and backtracks — just like a human researcher would."
 summary: "A deep dive into Agentic File Query — an AI-powered document search built with Google ADK, Gemini, and Docling. Instead of traditional RAG, the agent uses a three-phase Scan → Deep Dive → Backtrack strategy to intelligently navigate document folders and produce cited answers."

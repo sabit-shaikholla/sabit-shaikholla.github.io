@@ -1,5 +1,6 @@
 ---
 title: "Java Logging Best Practices"
+aliases: ["/til/java-logging-best-practices/"]
 date: 2025-02-14
 author: "Sabit Shaikholla"
 description: "Best practices for logging in Java applications, based on my experience"

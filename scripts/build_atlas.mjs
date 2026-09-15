@@ -2,7 +2,7 @@
 /**
  * Build the Content Atlas: a chunk-level semantic map of all posts.
  *
- * - Splits posts in content/{til,portfolio} into ~40-150 word chunks,
+ * - Splits posts in content/{projects,writing} into ~40-150 word chunks,
  *   keeping the nearest heading's anchor for deep links
  * - Embeds each chunk with all-MiniLM-L6-v2 (quantized ONNX) via
  *   @huggingface/transformers — the SAME model transformers.js loads in the
@@ -24,7 +24,7 @@ import crypto from 'node:crypto';
 import { fileURLToPath } from 'node:url';
 
 const ROOT = path.join(path.dirname(fileURLToPath(import.meta.url)), '..');
-const SECTIONS = ['til', 'portfolio'];
+const SECTIONS = ['projects', 'writing'];
 const MODEL_ID = 'Xenova/all-MiniLM-L6-v2';
 const DIMS = 384;
 const MIN_WORDS = 40;
