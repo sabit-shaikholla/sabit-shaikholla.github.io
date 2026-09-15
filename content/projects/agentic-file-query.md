@@ -1,5 +1,5 @@
 ---
-title: "Beyond RAG: Building an AI Agent That Explores Documents Like a Human Researcher"
+title: "Agentic File Query: An AI Agent That Reads Documents Like a Researcher"
 aliases: ["/portfolio/agentic-file-query/"]
 date: 2026-02-24
 description: "How I built an agentic document search system that replaces the traditional retrieve-and-generate pipeline with an AI agent that scans, reasons, follows cross-references, and backtracks — just like a human researcher would."
@@ -12,8 +12,6 @@ cover:
     caption: "Agent Development Kit (ADK) view of the agent"
 showToc: true
 ---
-
-# Beyond RAG: Building an AI Agent That Explores Documents Like a Human Researcher
 
 Traditional RAG has served us well. Upload your documents, chunk them, embed them, and retrieve the top-k closest matches when a user asks a question. It works. But if you've built enough RAG pipelines, you know the frustration: traditional RAG is blind. It doesn't understand document structure. It can't follow a cross-reference from a contract to its exhibits. It doesn't know which files in a folder are even worth reading.
 
