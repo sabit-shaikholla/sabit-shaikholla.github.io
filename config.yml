@@ -7,6 +7,10 @@ pygmentsUseClasses: true
 enableInlineShortcodes: true
 enableRobotsTXT: true
 enableGitInfo: true
+# "Updated" dates come only from a post's own lastmod front matter, never from git commits,
+# so bulk commits (renames, moves) don't mark every post as updated.
+frontmatter:
+  lastmod: ["lastmod", "date"]
 buildDrafts: false
 buildFuture: false
 buildExpired: false
