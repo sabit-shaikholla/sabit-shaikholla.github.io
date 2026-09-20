@@ -42,6 +42,27 @@ jobs:
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
         run: python3 scripts/embed_graph.py || echo "::warning::Embedding generation failed (missing GEMINI_API_KEY or API error); deploying with committed embeddings.json"
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - name: Install Atlas dependencies
+        run: npm ci
+      - name: Cache Atlas model
+        uses: actions/cache@v4
+        with:
+          path: node_modules/@huggingface/transformers/.cache
+          key: atlas-model-${{ runner.os }}-${{ hashFiles('package-lock.json') }}
+      # Rebuilding here is what stops a new article shipping with a stale Atlas.
+      # ATLAS_LAYOUT_ADVISORY keeps the UMAP-spacing check from blocking a
+      # deploy over layout quality; ci.yml runs the same suite strictly on PRs.
+      - name: Build Content Atlas
+        env:
+          ATLAS_LAYOUT_ADVISORY: "1"
+        run: |
+          npm run build:atlas
+          npm test
       - name: Build with Hugo
         env:
           HUGO_CACHEDIR: ${{ runner.temp }}/hugo_cache
