@@ -5,7 +5,7 @@
       "name": "RAG & Retrieval",
       "description": "Retrieval-augmented generation systems: document parsing, chunking, vector search, embeddings, and grounded question answering over private data.",
       "color": "#0B8BA3",
-      "tags": ["rag", "vector-search", "docling", "tavily"],
+      "tags": ["rag", "vector search", "docling", "tavily"],
       "categories": ["rag", "rag engineering"]
     },
     {
@@ -28,9 +28,9 @@
     {
       "id": "llm-engineering",
       "name": "LLM Engineering",
-      "description": "Building with large language model APIs: prompt design, structured output with Pydantic, and the Gemini API.",
+      "description": "Building with large language models: prompt design, structured output with Pydantic, provider APIs like Gemini, and running quantized models locally on constrained hardware.",
       "color": "#B8508A",
-      "tags": ["llm", "gemini", "pydantic"],
+      "tags": ["llm", "gemini", "pydantic", "on-device ai", "llama-cpp", "quantization", "watchos", "swift"],
       "categories": ["llm"]
     },
     {
@@ -54,7 +54,7 @@
       "name": "Software Craft",
       "description": "Software craftsmanship: architecture decision records, system design, web tooling, and engineering practices.",
       "color": "#D0583A",
-      "tags": ["software engineering", "system architecture", "solution architecture", "hugo", "web", "github-pages", "static-site", "react"],
+      "tags": ["software engineering", "system architecture", "solution architecture", "hugo", "web", "github pages", "static site", "react"],
       "categories": ["system architecture", "software engineering", "solution architecture", "web development"]
     }
   ]

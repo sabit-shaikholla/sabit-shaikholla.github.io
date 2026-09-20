@@ -1,4 +1,7 @@
 {{ define "main" }}
+{{- /* Same rule as the Atlas: the embedding sidecar is fingerprinted from this
+      build, so a cached copy can never outlive the node set it describes. */ -}}
+{{- $embeddings := resources.Get "graph/embeddings.json" | resources.Fingerprint -}}
 <article class="post-single">
   <header class="post-header">
     {{ partial "explore_tabs.html" . }}
@@ -27,7 +30,8 @@
       <div class="graph-stage">
         <!-- Canvas mounts here. NB: force-graph WIPES this container's innerHTML on init,
              so controls/legend/panel must be siblings, not children. -->
-        <div id="graph-container" data-source='{{ with .OutputFormats.Get "json" }}{{ .RelPermalink }}{{ end }}'></div>
+        <div id="graph-container" data-source='{{ with .OutputFormats.Get "json" }}{{ .RelPermalink }}{{ end }}'
+             data-embeddings="{{ with $embeddings }}{{ .RelPermalink }}{{ end }}"></div>
 
         <!-- Controls -->
         <div class="graph-controls">
@@ -71,9 +75,14 @@
   </div>
 </article>
 
-<!-- External Config & Libs -->
-<script src="//unpkg.com/d3@7"></script>
-<script src="//unpkg.com/force-graph@1"></script>
+<!-- External libs, pinned and integrity-checked: an unpinned major would let a
+     CDN change ship unreviewed code into the page. -->
+<script src="https://cdn.jsdelivr.net/npm/d3@7.9.0/dist/d3.min.js"
+        integrity="sha384-CjloA8y00+1SDAUkjs099PVfnY2KmDC2BZnws9kh8D/lX1s46w6EPhpXdqMfjK6i"
+        crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/force-graph@1.51.4/dist/force-graph.min.js"
+        integrity="sha384-Hm6GpQcTNI5VqGgGS7lLxTGtEFcxu/kOVV0B7ozIZRu9blWVvigv5httJQZ2qZmY"
+        crossorigin="anonymous"></script>
 <!-- 3d-force-graph (~1MB with three.js) is lazy-loaded by graph.js on first 3D toggle -->
 
 <!-- Graph Logic -->

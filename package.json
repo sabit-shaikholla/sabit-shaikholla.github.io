@@ -5,7 +5,8 @@
   "description": "Build tooling for the content atlas (chunk embedding + UMAP projection) and the Ask my career index",
   "scripts": {
     "build:atlas": "node scripts/build_atlas.mjs",
-    "build:career": "node scripts/build_career.mjs"
+    "build:career": "node scripts/build_career.mjs",
+    "test": "node --test scripts/*.test.mjs"
   },
   "dependencies": {
     "@huggingface/transformers": "^3.8.1",

@@ -6,7 +6,7 @@ author: "Sabit Shaikholla"
 description: "Ever wondered how to keep track of critical architectural decisions in your software projects? Discover how Architecture Decision Records (ADRs) can streamline communication, prevent repeated mistakes, and ensure your team stays aligned and efficient."
 summary: "Ever wondered how to keep track of critical architectural decisions in your software projects? Discover how Architecture Decision Records (ADRs) can streamline communication, prevent repeated mistakes, and ensure your team stays aligned and efficient."
 tags: ["Software Engineering","System Architecture", "Solution Architecture"]
-categories: ["System Architecture", "Software engineering", "Solution Architecture"]
+categories: ["System Architecture", "Software Engineering", "Solution Architecture"]
 series: ["Software Engineering"]
 cover:
     image: til/dependency.png

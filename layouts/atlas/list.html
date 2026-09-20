@@ -1,4 +1,9 @@
 {{ define "main" }}
+{{- /* Publish immutable, content-addressed data alongside the UI. Both URLs come
+      from this build, so cached JSON cannot be paired with newer vectors. These
+      live in assets/, not static/, so only the fingerprinted copy ships. */ -}}
+{{- $atlasData := resources.Get "atlas/atlas.json" | resources.Fingerprint -}}
+{{- $atlasVectors := resources.Get "atlas/atlas-vectors.bin" | resources.Fingerprint -}}
 <article class="post-single">
   <header class="post-header">
     {{ partial "explore_tabs.html" . }}
@@ -25,7 +30,9 @@
       <div id="atlas-stats" class="atlas-stats"></div>
 
       <div class="atlas-stage">
-        <div id="atlas-container" data-source='{{ "atlas/atlas.json" | relURL }}'></div>
+        <div id="atlas-container" data-source="{{ $atlasData.RelPermalink }}" data-vectors="{{ $atlasVectors.RelPermalink }}"
+             tabindex="0" role="application"
+             aria-label="Content atlas. Arrow keys pan, plus and minus zoom, 0 resets the view, n and p step through paragraphs, Enter opens the selected one, Escape clears the selection."></div>
 
         <!-- Controls -->
         <div class="atlas-controls">
@@ -48,14 +55,16 @@
           </button>
         </div>
 
-        <!-- Skill legend (populated by JS) -->
-        <div id="atlas-legend" class="atlas-legend"></div>
-
         <!-- Paragraph detail panel (populated by JS) -->
-        <div id="atlas-panel" class="atlas-panel"></div>
+        <div id="atlas-panel" class="atlas-panel" inert></div>
       </div>
 
+      <!-- Keep the legend outside the map so it never covers a cluster. -->
+      <div id="atlas-legend" class="atlas-legend"></div>
+
       <div class="atlas-footer">
+        Tap or click a dot to pin its details and read the article; on a mouse, hovering previews one.
+        From the keyboard, focus the map and use <kbd>n</kbd>/<kbd>p</kbd> to step through paragraphs, arrows to pan, <kbd>+</kbd>/<kbd>-</kbd> to zoom, <kbd>0</kbd> to reset.
         Paragraphs are chunked at build time, embedded with a sentence-transformer, and projected to 2D with UMAP.
         Search loads the same model into your browser via transformers.js and ranks chunks by cosine similarity &mdash; a fully client-side retrieval pipeline.
       </div>
@@ -63,8 +72,12 @@
   </div>
 </article>
 
-<!-- D3 (zoom, quadtree, density contours). transformers.js is lazy-loaded by atlas.js on first search. -->
-<script src="//unpkg.com/d3@7"></script>
+<!-- D3 (zoom, quadtree, density contours). Pinned and integrity-checked: an
+     unpinned major would let a CDN change ship unreviewed code into the page.
+     transformers.js is lazy-loaded by atlas.js on first search. -->
+<script src="https://cdn.jsdelivr.net/npm/d3@7.9.0/dist/d3.min.js"
+        integrity="sha384-CjloA8y00+1SDAUkjs099PVfnY2KmDC2BZnws9kh8D/lX1s46w6EPhpXdqMfjK6i"
+        crossorigin="anonymous"></script>
 
 {{ $atlasJS := resources.Get "js/atlas.js" | resources.Minify | resources.Fingerprint }}
 <script src="{{ $atlasJS.RelPermalink }}"></script>

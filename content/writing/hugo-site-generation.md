@@ -5,7 +5,7 @@ date: 2025-02-14
 author: "Sabit Shaikholla"
 description: "A comprehensive guide on creating a personal website using Hugo static site generator with PaperMod theme, including installation, configuration, and deployment to GitHub Pages"
 summary: "A comprehensive guide on creating a personal website using Hugo static site generator with PaperMod theme, including installation, configuration, and deployment to GitHub Pages"
-tags: ["hugo", "web", "github-pages","static-site"]
+tags: ["Hugo", "Web", "GitHub Pages", "Static Site"]
 categories: ["Web Development"]
 series: ["Hugo Learning"]
 showtoc: true

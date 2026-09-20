@@ -1,0 +1,54 @@
+name: CI
+
+# The strict gate. Everything here also runs before a deploy, except that the
+# deploy downgrades the Atlas layout-quality check to a warning so it can never
+# block publishing a post. Failures belong on the pull request instead.
+on:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    env:
+      HUGO_VERSION: 0.155.2
+    steps:
+      - name: Install Hugo CLI
+        run: |
+          wget -O ${{ runner.temp }}/hugo.deb https://github.com/gohugoio/hugo/releases/download/v${HUGO_VERSION}/hugo_extended_${HUGO_VERSION}_linux-amd64.deb \
+          && sudo dpkg -i ${{ runner.temp }}/hugo.deb
+      - name: Install Dart Sass
+        run: sudo snap install dart-sass
+      - name: Checkout
+        uses: actions/checkout@v7
+        with:
+          submodules: recursive
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - name: Install dependencies
+        run: npm ci
+      - name: Cache Atlas model
+        uses: actions/cache@v4
+        with:
+          path: node_modules/@huggingface/transformers/.cache
+          key: atlas-model-${{ runner.os }}-${{ hashFiles('package-lock.json') }}
+      - name: Rebuild the Atlas
+        run: npm run build:atlas
+      - name: Report data that would change on deploy
+        run: |
+          if ! git diff --quiet -- assets/atlas scripts/atlas-cache.json; then
+            echo "::notice::The committed Atlas is out of date; deploying will regenerate it."
+            git diff --stat -- assets/atlas scripts/atlas-cache.json
+          fi
+      - name: Test
+        run: npm test

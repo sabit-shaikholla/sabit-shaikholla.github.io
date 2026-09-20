@@ -4,7 +4,7 @@ aliases: ["/portfolio/ai-news-agent/"]
 date: 2025-02-19
 description: "A type-safe AI news research agent built with Pydantic-AI, Gemini 2.0 Flash, and Tavily Search"
 summary: "A type-safe AI news research agent built with Pydantic-AI, Gemini 2.0 Flash, and Tavily Search"
-tags: ["ai", "llm", "python", "gemini", "pydantic"]
+tags: ["AI", "LLM", "Python", "Gemini", "Pydantic"]
 categories: ["AI", "ML Engineering", "LLM"]
 showToc: true
 ---
