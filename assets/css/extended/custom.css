@@ -19,3 +19,11 @@ iframe {
 .entry-cover img {
     border: 1px solid var(--border);
 }
+
+/* The MicroPrompt cover is an app icon, not a full-width screenshot. */
+.post-entry .entry-cover img[src$="/microprompt/icon.png"] {
+    width: 96px;
+    height: 96px;
+    object-fit: contain;
+    border: 0;
+}
