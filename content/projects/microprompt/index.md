@@ -1,7 +1,7 @@
 ---
 title: "MicroPrompt: Running Small Language Models on an Apple Watch"
 date: 2026-09-20
-draft: true
+draft: false
 author: "Sabit Shaikholla"
 description: "Building a watchOS app that runs small language models locally with Swift and llama.cpp. Build fixes, model choices, caching, and performance on an Apple Watch SE."
 summary: "I wanted to see whether my first-generation Apple Watch SE could run a small language model locally. Notes on getting llama.cpp working, reducing the wait for answers, and adding a few tools."
