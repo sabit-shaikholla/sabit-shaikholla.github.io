@@ -248,8 +248,13 @@ async function main() {
 
     const vectors = hashes.map(h => cache[h]);
 
-    console.log('Projecting with UMAP...');
-    const positions = await projectVectors(vectors);
+    const reused = process.argv.includes('--reproject') ? null : committedPositions(chunks);
+    if (reused) {
+        console.log('Chunk set unchanged; keeping the committed layout.');
+    } else {
+        console.log('Projecting with UMAP...');
+    }
+    const positions = reused || await projectVectors(vectors);
     chunks.forEach((c, i) => { [c.x, c.y] = positions[i]; });
 
     // Quantize unit vectors to int8 with a single global scale
@@ -280,6 +285,28 @@ async function main() {
     console.log(`Wrote ${chunks.length} chunks -> assets/atlas/atlas.json (${jsonKB} KB) + atlas-vectors.bin (${binKB} KB)`);
 }
 
+/* The UMAP seed makes a layout reproducible within one V8, but umap-js leans on
+   Math.pow/log/exp, which ECMAScript leaves implementation-defined — another
+   Node version or architecture returns coordinates that differ in the last
+   digits. Reprojecting only when the chunk set actually changes keeps the
+   committed output byte-identical everywhere, so CI and a laptop agree.
+   Pass --reproject to force a fresh layout. */
+export function committedPositions(chunks, dir = OUT_DIR) {
+    const file = path.join(dir, 'atlas.json');
+    if (!fs.existsSync(file)) return null;
+    let prev;
+    try {
+        prev = JSON.parse(fs.readFileSync(file, 'utf8'));
+    } catch {
+        return null;
+    }
+    if (prev?.meta?.model !== MODEL_ID || prev.chunks?.length !== chunks.length) return null;
+    const identical = prev.chunks.every((c, i) =>
+        c.post === chunks[i].post && c.anchor === chunks[i].anchor && c.text === chunks[i].text
+        && Number.isFinite(c.x) && Number.isFinite(c.y));
+    return identical ? prev.chunks.map(c => [c.x, c.y]) : null;
+}
+
 // A broader neighborhood keeps small, self-similar topics connected to the
 // rest of the map. With 12 neighbors the ADR article became a distant island;
 // fitting that island compressed every other topic. minDist gives dots room.
@@ -304,7 +331,10 @@ export async function projectVectors(vectors) {
     const cy = proj.reduce((s, p) => s + p[1], 0) / proj.length;
     const maxAbs = Math.max(...proj.map(p => Math.max(Math.abs(p[0] - cx), Math.abs(p[1] - cy)))) || 1;
     const k = POSITION_SCALE / maxAbs;
-    return proj.map(p => [+((p[0] - cx) * k).toFixed(1), +((p[1] - cy) * k).toFixed(1)]);
+    // Collapse -0 to 0: JSON.stringify writes both as "0", so a -0 here could
+    // never compare equal to the value read back out of atlas.json.
+    const round = v => (+(v).toFixed(1)) || 0;
+    return proj.map(p => [round((p[0] - cx) * k), round((p[1] - cy) * k)]);
 }
 
 if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {

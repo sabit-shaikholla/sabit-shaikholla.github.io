@@ -7,7 +7,7 @@ import crypto from 'node:crypto';
 import vm from 'node:vm';
 import { fileURLToPath } from 'node:url';
 import { quadtree, zoom as d3zoom, zoomIdentity } from 'd3';
-import { anchorize, collectChunks, projectVectors } from './build_atlas.mjs';
+import { anchorize, collectChunks, committedPositions, projectVectors } from './build_atlas.mjs';
 
 const root = fileURLToPath(new URL('../', import.meta.url));
 const readJSON = file => JSON.parse(fs.readFileSync(path.join(root, file), 'utf8'));
@@ -65,12 +65,48 @@ test('search vectors match chunk order and the regenerated embedding cache', () 
     });
 });
 
-test('projection is deterministic and handles tiny collections', async () => {
-    assert.deepEqual(await projectVectors(vectors), atlas.chunks.map(c => [c.x, c.y]));
+/* Not "UMAP is deterministic": it is only reproducible within one V8 build,
+   because umap-js uses Math.pow/log/exp. What has to hold is that a rebuild of
+   unchanged content reuses the committed layout, so CI and a laptop produce the
+   same bytes. Reprojection itself only has to be sane and stable in-process. */
+test('a rebuild of unchanged content keeps the committed layout', () => {
+    const reused = committedPositions(collectChunks(root, skills), path.join(root, 'assets/atlas'));
+    assert.deepEqual(reused, atlas.chunks.map(c => [c.x, c.y]));
+});
+
+test('the committed layout is dropped when the chunk set changes', t => {
+    const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'atlas-layout-'));
+    t.after(() => fs.rmSync(dir, { recursive: true, force: true }));
+    const write = data => fs.writeFileSync(path.join(dir, 'atlas.json'), JSON.stringify(data));
+    const chunks = collectChunks(root, skills);
+    const current = { meta: atlas.meta, chunks: atlas.chunks };
+
+    write(current);
+    assert.deepEqual(committedPositions(chunks, dir), atlas.chunks.map(c => [c.x, c.y]));
+
+    write({ ...current, chunks: current.chunks.slice(0, -1) });
+    assert.equal(committedPositions(chunks, dir), null, 'a new paragraph must reproject');
+
+    write({ ...current, meta: { ...atlas.meta, model: 'other/model' } });
+    assert.equal(committedPositions(chunks, dir), null, 'a model change must reproject');
+
+    write({ ...current, chunks: current.chunks.map((c, i) => i ? c : { ...c, text: c.text + '!' }) });
+    assert.equal(committedPositions(chunks, dir), null, 'edited text must reproject');
+
+    fs.writeFileSync(path.join(dir, 'atlas.json'), '{ not json');
+    assert.equal(committedPositions(chunks, dir), null, 'unreadable layout must reproject');
+});
+
+test('reprojection is stable in-process, finite, and free of negative zero', async () => {
+    const points = await projectVectors(vectors);
+    assert.deepEqual(await projectVectors(vectors), points);
+    assert.equal(points.length, vectors.length);
+    assert.ok(points.flat().every(v => Number.isFinite(v) && !Object.is(v, -0)));
+    assert.ok(points.flat().every(v => Math.abs(v) <= 400));
     for (const count of [0, 1, 2]) {
-        const points = await projectVectors(vectors.slice(0, count));
-        assert.equal(points.length, count);
-        assert.ok(points.flat().every(Number.isFinite));
+        const tiny = await projectVectors(vectors.slice(0, count));
+        assert.equal(tiny.length, count);
+        assert.ok(tiny.flat().every(Number.isFinite));
     }
 });
 

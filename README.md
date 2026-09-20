@@ -121,8 +121,14 @@ npm test              # content coverage, anchors, taxonomy, layout, interaction
 
 - First run downloads the ONNX model (~25 MB) to the local HF cache.
 - Chunk embeddings are cached in `scripts/atlas-cache.json` (committed) keyed by
-  text hash; the build is deterministic (seeded UMAP), so unchanged content
-  produces byte-identical output. `embed_graph.py` is reproducible too.
+  text hash, so a rebuild only calls the model for new or edited paragraphs.
+- The UMAP layout is reused unless the chunk set changes. The seed makes a
+  projection reproducible within one V8 build, but umap-js uses `Math.pow`,
+  `Math.log` and `Math.exp`, which ECMAScript leaves implementation-defined —
+  another Node version or CPU architecture returns coordinates that differ in
+  the last digits. Reprojecting only when content actually changes is what makes
+  a rebuild byte-identical on CI and on a laptop. `npm run build:atlas --
+  --reproject` forces a fresh layout. `embed_graph.py` is reproducible too.
 - Both standalone Markdown posts and Hugo leaf bundles (`article/index.md`) in
   `content/projects` and `content/writing` are included, including nested posts;
   drafts, section indexes, and bundle resources are excluded. `embed_graph.py`
