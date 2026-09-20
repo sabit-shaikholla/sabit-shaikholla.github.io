@@ -11,8 +11,8 @@
  * - Projects to 2D with seeded UMAP (umap-js) — deterministic layout
  * - Assigns each chunk its post's strongest skill (data/skills.json, same
  *   overlap logic as the graph template)
- * - Writes static/atlas/atlas.json (chunks + positions + meta) and
- *   static/atlas/atlas-vectors.bin (int8-quantized unit vectors for
+ * - Writes assets/atlas/atlas.json (chunks + positions + meta) and
+ *   assets/atlas/atlas-vectors.bin (int8-quantized unit vectors for
  *   in-browser cosine search)
  *
  * Run locally: npm run build:atlas   (first run downloads the model once)
@@ -34,7 +34,7 @@ const UMAP_SEED = 42;
 
 const CACHE_PATH = path.join(ROOT, 'scripts', 'atlas-cache.json');
 const SKILLS_PATH = path.join(ROOT, 'data', 'skills.json');
-const OUT_DIR = path.join(ROOT, 'static', 'atlas');
+const OUT_DIR = path.join(ROOT, 'assets', 'atlas');
 
 /* ---------------- Parsing ---------------- */
 
@@ -59,12 +59,24 @@ function parseFrontmatter(raw) {
     return { front, body: raw.slice(m[0].length) };
 }
 
-// Mirror goldmark's GitHub-style auto heading IDs closely enough for anchors
-function anchorize(heading) {
-    return heading.toLowerCase()
-        .replace(/[^\w\s-]/g, '')
+/* Mirror Hugo's GitHub-style auto heading IDs. Verified against a real Hugo
+   build by the anchor test, which is the guard if goldmark ever changes:
+     - inline markup contributes its rendered text, not its source
+     - typographer folds --, ---, ... and quotes into characters that then drop
+     - Unicode letters and digits survive, lowercased; so do - and _
+     - every other character is dropped, contributing nothing
+     - each whitespace character becomes one hyphen; runs are NOT collapsed */
+export function anchorize(heading) {
+    return heading
         .trim()
-        .replace(/\s+/g, '-');
+        .replace(/!\[[^\]]*\]\([^)]*\)/g, '')       // images contribute no text
+        .replace(/\[([^\]]*)\]\([^)]*\)/g, '$1')    // links -> their text
+        .replace(/`([^`]*)`/g, '$1')                // inline code -> its text
+        .replace(/\*{1,3}([^*]+)\*{1,3}/g, '$1')    // emphasis (never _, which anchors keep)
+        .replace(/-{2,}|\.{3,}/g, '')               // typographer dashes/ellipsis drop out
+        .toLowerCase()
+        .replace(/[^\p{L}\p{N}\s\-_]/gu, '')
+        .replace(/\s/g, '-');
 }
 
 function cleanParagraph(p) {
@@ -149,23 +161,32 @@ function strongestSkill(front, permalink, skills) {
     return best;
 }
 
-/* ---------------- Main ---------------- */
+/* Hugo supports both standalone Markdown files and leaf bundles (dir/index.md).
+   Stop at a leaf bundle: other Markdown files inside it are page resources. */
+function* postFiles(dir) {
+    if (fs.existsSync(path.join(dir, 'index.md'))) {
+        yield path.join(dir, 'index.md');
+        return;
+    }
+    for (const entry of fs.readdirSync(dir, { withFileTypes: true }).sort((a, b) => a.name < b.name ? -1 : a.name > b.name ? 1 : 0)) {
+        const file = path.join(dir, entry.name);
+        if (entry.isDirectory()) yield* postFiles(file);
+        else if (entry.isFile() && entry.name.endsWith('.md') && !entry.name.startsWith('_')) yield file;
+    }
+}
 
-async function main() {
-    const skills = JSON.parse(fs.readFileSync(SKILLS_PATH, 'utf8')).skills || [];
-
-    // Collect chunks
+export function collectChunks(root, skills) {
     const chunks = [];
     for (const section of SECTIONS) {
-        const dir = path.join(ROOT, 'content', section);
+        const dir = path.join(root, 'content', section);
         if (!fs.existsSync(dir)) continue;
-        for (const fname of fs.readdirSync(dir).sort()) {
-            if (!fname.endsWith('.md') || fname.startsWith('_')) continue;
-            const raw = fs.readFileSync(path.join(dir, fname), 'utf8');
+        for (const file of postFiles(dir)) {
+            const raw = fs.readFileSync(file, 'utf8');
             const { front, body } = parseFrontmatter(raw);
             if (front.draft) continue;
-            const slug = fname.replace(/\.md$/, '');
-            const permalink = `/${section}/${slug}/`;
+            const slug = path.relative(dir, file).split(path.sep).join('/')
+                .replace(/(^|\/)index\.md$/, '').replace(/\.md$/, '');
+            const permalink = `/${section}/${slug ? slug + '/' : ''}`;
             const skill = strongestSkill(front, permalink, skills);
             for (const c of chunkPost(body)) {
                 chunks.push({
@@ -180,6 +201,14 @@ async function main() {
             }
         }
     }
+    return chunks;
+}
+
+/* ---------------- Main ---------------- */
+
+async function main() {
+    const skills = JSON.parse(fs.readFileSync(SKILLS_PATH, 'utf8')).skills || [];
+    const chunks = collectChunks(ROOT, skills);
     if (!chunks.length) {
         console.error('No chunks produced.');
         process.exit(1);
@@ -219,33 +248,9 @@ async function main() {
 
     const vectors = hashes.map(h => cache[h]);
 
-    // Seeded UMAP projection
     console.log('Projecting with UMAP...');
-    const { UMAP } = await import('umap-js');
-    let seed = UMAP_SEED;
-    const rand = () => {
-        seed |= 0; seed = (seed + 0x6D2B79F5) | 0;
-        let t = Math.imul(seed ^ (seed >>> 15), 1 | seed);
-        t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
-        return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
-    };
-    const umap = new UMAP({
-        nComponents: 2,
-        nNeighbors: Math.min(12, vectors.length - 1),
-        minDist: 0.15,
-        random: rand
-    });
-    const proj = umap.fit(vectors);
-
-    // Center + scale positions to [-POSITION_SCALE, POSITION_SCALE]
-    const cx = proj.reduce((s, p) => s + p[0], 0) / proj.length;
-    const cy = proj.reduce((s, p) => s + p[1], 0) / proj.length;
-    const maxAbs = Math.max(...proj.map(p => Math.max(Math.abs(p[0] - cx), Math.abs(p[1] - cy)))) || 1;
-    const k = POSITION_SCALE / maxAbs;
-    chunks.forEach((c, i) => {
-        c.x = +((proj[i][0] - cx) * k).toFixed(1);
-        c.y = +((proj[i][1] - cy) * k).toFixed(1);
-    });
+    const positions = await projectVectors(vectors);
+    chunks.forEach((c, i) => { [c.x, c.y] = positions[i]; });
 
     // Quantize unit vectors to int8 with a single global scale
     // (cosine similarity is invariant to uniform scaling)
@@ -272,7 +277,36 @@ async function main() {
 
     const jsonKB = Math.round(fs.statSync(path.join(OUT_DIR, 'atlas.json')).size / 1024);
     const binKB = Math.round(fs.statSync(path.join(OUT_DIR, 'atlas-vectors.bin')).size / 1024);
-    console.log(`Wrote ${chunks.length} chunks -> static/atlas/atlas.json (${jsonKB} KB) + atlas-vectors.bin (${binKB} KB)`);
+    console.log(`Wrote ${chunks.length} chunks -> assets/atlas/atlas.json (${jsonKB} KB) + atlas-vectors.bin (${binKB} KB)`);
 }
 
-main().catch(e => { console.error(e); process.exit(1); });
+// A broader neighborhood keeps small, self-similar topics connected to the
+// rest of the map. With 12 neighbors the ADR article became a distant island;
+// fitting that island compressed every other topic. minDist gives dots room.
+export async function projectVectors(vectors) {
+    if (vectors.length <= 1) return vectors.map(() => [0, 0]);
+    if (vectors.length === 2) return [[-POSITION_SCALE / 2, 0], [POSITION_SCALE / 2, 0]];
+    const { UMAP } = await import('umap-js');
+    let seed = UMAP_SEED;
+    const random = () => {
+        seed |= 0; seed = (seed + 0x6D2B79F5) | 0;
+        let t = Math.imul(seed ^ (seed >>> 15), 1 | seed);
+        t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+        return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+    };
+    const proj = new UMAP({
+        nComponents: 2,
+        nNeighbors: Math.min(30, vectors.length - 1),
+        minDist: 0.25,
+        random
+    }).fit(vectors);
+    const cx = proj.reduce((s, p) => s + p[0], 0) / proj.length;
+    const cy = proj.reduce((s, p) => s + p[1], 0) / proj.length;
+    const maxAbs = Math.max(...proj.map(p => Math.max(Math.abs(p[0] - cx), Math.abs(p[1] - cy)))) || 1;
+    const k = POSITION_SCALE / maxAbs;
+    return proj.map(p => [+((p[0] - cx) * k).toFixed(1), +((p[1] - cy) * k).toFixed(1)]);
+}
+
+if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
+    main().catch(e => { console.error(e); process.exitCode = 1; });
+}

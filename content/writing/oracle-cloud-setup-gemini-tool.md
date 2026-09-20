@@ -167,7 +167,7 @@ sudo systemctl restart nginx
 
 ---
 
-## **5. SSL Certificate with Let's Encrypt**
+## 5. SSL Certificate with Let's Encrypt
 
 Security is paramount, so I secured the application with an SSL certificate using Certbot.
 

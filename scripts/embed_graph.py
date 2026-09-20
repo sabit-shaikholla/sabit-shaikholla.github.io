@@ -9,7 +9,7 @@ Knowledge Graph.
 - Embeds everything with Gemini (gemini-embedding-001) via REST (no deps)
 - Caches embeddings by content hash in scripts/embeddings-cache.json
   (committed) so the API is only called for new/changed content
-- Writes to static/graph/embeddings.json:
+- Writes to assets/graph/embeddings.json:
     links     - post-to-post edges above a similarity threshold
     positions - 2D PCA projection of every node (posts + skills) used by
                 the graph's "semantic layout" mode
@@ -43,7 +43,7 @@ POSITION_SCALE = 350       # PCA coords are scaled to roughly [-350, 350]
 
 CACHE_PATH = os.path.join(os.path.dirname(__file__), "embeddings-cache.json")
 SKILLS_PATH = os.path.join(os.path.dirname(__file__), "..", "data", "skills.json")
-OUT_PATH = os.path.join(os.path.dirname(__file__), "..", "static", "graph", "embeddings.json")
+OUT_PATH = os.path.join(os.path.dirname(__file__), "..", "assets", "graph", "embeddings.json")
 
 FM_RE = re.compile(r"^---\s*\n(.*?)\n---\s*\n", re.DOTALL)
 
@@ -80,21 +80,35 @@ def parse_post(path):
     return (title + ". " + text)[:MAX_INPUT_CHARS]
 
 
+def post_files(d):
+    """Hugo supports both standalone Markdown files and leaf bundles
+    (dir/index.md). Stop at a leaf bundle: the other Markdown files inside it
+    are page resources, not posts. Mirrors postFiles() in build_atlas.mjs."""
+    if os.path.isfile(os.path.join(d, "index.md")):
+        yield os.path.join(d, "index.md")
+        return
+    for name in sorted(os.listdir(d)):
+        path = os.path.join(d, name)
+        if os.path.isdir(path):
+            yield from post_files(path)
+        elif name.endswith(".md") and not name.startswith("_"):
+            yield path
+
+
 def collect_posts(root):
     posts = []  # (id, text, hash)
     for section in SECTIONS:
         d = os.path.join(root, "content", section)
         if not os.path.isdir(d):
             continue
-        for fname in sorted(os.listdir(d)):
-            if not fname.endswith(".md") or fname.startswith("_"):
-                continue
-            path = os.path.join(d, fname)
+        for path in post_files(d):
             parsed = parse_post(path)
             if parsed is None:
                 continue
-            slug = os.path.splitext(fname)[0]
-            node_id = f"/{section}/{slug}/"
+            slug = os.path.relpath(path, d).replace(os.sep, "/")
+            slug = re.sub(r"(^|/)index\.md$", "", slug)
+            slug = re.sub(r"\.md$", "", slug)
+            node_id = f"/{section}/{slug}/" if slug else f"/{section}/"
             content_hash = hashlib.sha256(parsed.encode()).hexdigest()[:16]
             posts.append((node_id, parsed, content_hash))
     return posts
@@ -220,10 +234,12 @@ def main():
         print("All embeddings up to date (cache hit).")
 
     with open(CACHE_PATH, "w") as f:
-        json.dump(cache, f)
+        json.dump(cache, f, sort_keys=True)
 
     # Drop cache entries for deleted posts/skills
-    live_ids = {pid for pid, _, _ in items}
+    # Sorted, not a set: set iteration order varies with PYTHONHASHSEED, which
+    # would reorder the output JSON on every run and churn the committed diff.
+    live_ids = sorted({pid for pid, _, _ in items})
     vectors = {pid: cache[pid]["vector"] for pid in live_ids if pid in cache}
 
     # Pairwise similarities: post-to-post only (skills connect via curated
@@ -252,7 +268,7 @@ def main():
     out = {"model": MODEL, "threshold": SIM_THRESHOLD, "links": edges, "positions": positions}
     os.makedirs(os.path.dirname(OUT_PATH), exist_ok=True)
     with open(OUT_PATH, "w") as f:
-        json.dump(out, f)
+        json.dump(out, f, sort_keys=True)
 
     print(f"Wrote {len(edges)} semantic edges + {len(positions)} positions -> {os.path.relpath(OUT_PATH)}")
 
