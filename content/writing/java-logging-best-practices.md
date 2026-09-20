@@ -5,7 +5,7 @@ date: 2025-02-14
 author: "Sabit Shaikholla"
 description: "Best practices for logging in Java applications, based on my experience"
 summary: "Best practices for logging in Java applications, based on my experience"
-tags: ["java"]
+tags: ["Java"]
 categories: ["Backend Development"]
 series: ["Java"]
 showtoc: true
