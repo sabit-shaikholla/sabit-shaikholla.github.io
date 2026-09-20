@@ -87,14 +87,23 @@ class KnowledgeGraph {
         }
     }
 
-    /* Merge AI-embedding similarity edges (static/graph/embeddings.json) into
-       the tag-based edge set. Hybrid weight = tag overlap + semantic similarity. */
+    /* Merge AI-embedding similarity edges (assets/graph/embeddings.json) into
+       the tag-based edge set. Hybrid weight = tag overlap + semantic similarity.
+       The URL is fingerprinted by the template, so it always matches this build. */
     async mergeSemanticLinks() {
         try {
-            const res = await fetch('/graph/embeddings.json');
+            const url = this.container.dataset.embeddings;
+            if (!url) return;
+            const res = await fetch(url);
             if (!res.ok) return;
             const semantic = await res.json();
-            this.positions = semantic.positions || null;
+            // The generator writes root-relative post ids; node ids carry the
+            // site's base path. They only coincide when the site is at the root.
+            const base = (this.container.dataset.source || '/').replace(/explore\/graph\/index\.json$/, '');
+            const localize = id => id.startsWith('skill:') ? id : base + id.replace(/^\//, '');
+            this.positions = semantic.positions
+                ? Object.fromEntries(Object.entries(semantic.positions).map(([id, p]) => [localize(id), p]))
+                : null;
             if (!semantic.links?.length) return;
             this.semanticMeta = { model: semantic.model, count: semantic.links.length };
 
@@ -103,7 +112,8 @@ class KnowledgeGraph {
                 byPair.set([l.source, l.target].sort().join('|'), l);
             });
 
-            semantic.links.forEach(sl => {
+            semantic.links.forEach(raw => {
+                const sl = { ...raw, source: localize(raw.source), target: localize(raw.target) };
                 const key = [sl.source, sl.target].sort().join('|');
                 const existing = byPair.get(key);
                 if (existing) {
@@ -404,7 +414,9 @@ class KnowledgeGraph {
         if (!this._lib3dPromise) {
             this._lib3dPromise = new Promise((resolve, reject) => {
                 const s = document.createElement('script');
-                s.src = 'https://unpkg.com/3d-force-graph@1';
+                s.src = 'https://cdn.jsdelivr.net/npm/3d-force-graph@1.80.0/dist/3d-force-graph.min.js';
+                s.integrity = 'sha384-Y7bC2PBKu8ujxtvo5+Z61OeGdSVRzFsYWBK4i5dnL/U6aFDTodk61qOUkTfInaxS';
+                s.crossOrigin = 'anonymous';
                 s.onload = resolve;
                 s.onerror = () => { this._lib3dPromise = null; reject(new Error('Failed to load 3D renderer')); };
                 document.head.appendChild(s);

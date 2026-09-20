@@ -16,6 +16,9 @@ class Atlas {
         this.meta = null;
         this.hovered = null;
         this.pinned = null;
+        this.navigating = false;       // a pan/zoom gesture is in flight
+        this.userMoved = false;        // the view is the reader's, not the fitted default
+        this._frame = null;            // pending requestAnimationFrame id
         this.hits = null;              // Map(index -> similarity) when a search is active
         this.transform = d3.zoomIdentity;
         this.contours = [];
@@ -47,7 +50,9 @@ class Atlas {
 
     async init() {
         try {
-            const res = await fetch(this.container.dataset.source || '/atlas/atlas.json');
+            // Both URLs are content-addressed by Hugo, so they are immutable and
+            // safe to cache hard; a content change produces a different URL.
+            const res = await fetch(this.container.dataset.source);
             if (!res.ok) throw new Error('Failed to load atlas data');
             const data = await res.json();
             this.meta = data.meta;
@@ -60,6 +65,7 @@ class Atlas {
             this.fitView();
             this.setupZoom();
             this.setupPointer();
+            this.setupKeyboard();
             this.setupSearch();
             this.buildLegend();
             this.updateStats();
@@ -68,10 +74,16 @@ class Atlas {
             new MutationObserver(() => this.draw())
                 .observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
 
+            // Re-fitting on every resize would throw away the reader's position;
+            // on mobile the collapsing URL bar fires resize mid-scroll.
             let resizeTimer;
             window.addEventListener('resize', () => {
                 clearTimeout(resizeTimer);
-                resizeTimer = setTimeout(() => { this.setupCanvas(); this.fitView(); this.draw(); }, 200);
+                resizeTimer = setTimeout(() => {
+                    this.setupCanvas();
+                    if (!this.userMoved) this.fitView();
+                    this.draw();
+                }, 200);
             });
         } catch (e) {
             console.error('Atlas initialization failed:', e);
@@ -133,17 +145,37 @@ class Atlas {
     setupZoom() {
         this.zoom = d3.zoom()
             .scaleExtent([0.2, 12])
-            .on('zoom', ev => { this.transform = ev.transform; this.draw(); });
+            // d3 fires 'start' on every mousedown, before any movement, so
+            // clearing the hover preview here would blink it away on a plain
+            // click. Only an actual transform change means the reader is
+            // navigating, and that only arrives as a 'zoom' event.
+            .on('start', () => { this.navigating = true; })
+            .on('zoom', ev => {
+                if (ev.sourceEvent) {
+                    this.userMoved = true;
+                    if (this.hovered) {
+                        this.hovered = null;
+                        if (!this.pinned) this.hidePanel();
+                    }
+                }
+                this.transform = ev.transform;
+                this.draw();
+            })
+            .on('end', () => { this.navigating = false; });
         d3.select(this.canvas).call(this.zoom).call(this.zoom.transform, this.transform);
         const get = id => document.getElementById(id);
         const zoomBy = f => d3.select(this.canvas)
             .transition().duration(this.reduceMotion ? 0 : 300)
             .call(this.zoom.scaleBy, f);
-        if (get('atlas-zoom-in')) get('atlas-zoom-in').onclick = () => zoomBy(1.5);
-        if (get('atlas-zoom-out')) get('atlas-zoom-out').onclick = () => zoomBy(1 / 1.5);
-        if (get('atlas-fit')) get('atlas-fit').onclick = () => {
-            this.pinned = null; this.hidePanel(); this.fitView(); this.draw();
-        };
+        this.zoomBy = zoomBy;
+        if (get('atlas-zoom-in')) get('atlas-zoom-in').onclick = () => { this.userMoved = true; zoomBy(1.5); };
+        if (get('atlas-zoom-out')) get('atlas-zoom-out').onclick = () => { this.userMoved = true; zoomBy(1 / 1.5); };
+        if (get('atlas-fit')) get('atlas-fit').onclick = () => this.resetView();
+    }
+
+    resetView() {
+        this.pinned = null; this.hovered = null; this.userMoved = false;
+        this.hidePanel(); this.fitView(); this.draw();
     }
 
     /* ---------------- Rendering ---------------- */
@@ -156,7 +188,15 @@ class Atlas {
         return this.skills[chunk.skill]?.color || '#7A808A';
     }
 
+    /* Wheel and drag events outrun the compositor; coalesce to one paint
+       per frame so a fast gesture does not queue up redundant redraws. */
     draw() {
+        if (this._frame !== null) return;
+        if (typeof requestAnimationFrame !== 'function') { this.render(); return; }
+        this._frame = requestAnimationFrame(() => { this._frame = null; this.render(); });
+    }
+
+    render() {
         const t = this.theme();
         const ctx = this.ctx;
         const tr = this.transform;
@@ -221,6 +261,7 @@ class Atlas {
             return found || null;
         };
         this.canvas.addEventListener('mousemove', ev => {
+            if (this.navigating) return;
             const c = pick(ev);
             if (c !== this.hovered) {
                 this.hovered = c;
@@ -247,6 +288,62 @@ class Atlas {
         });
     }
 
+    /* ---------------- Keyboard ---------------- */
+
+    /* The map is a canvas, so none of it is reachable by default. Arrows pan,
+       n/p walk the paragraphs in build order, Enter opens the pinned one.
+       Tab is deliberately left alone so focus can always leave the widget. */
+    setupKeyboard() {
+        const PAN = 60;
+        this.container.addEventListener('keydown', ev => {
+            if (ev.altKey || ev.ctrlKey || ev.metaKey) return;
+            const pan = (dx, dy) => {
+                this.userMoved = true;
+                d3.select(this.canvas).call(this.zoom.translateBy,
+                    dx * (ev.shiftKey ? 3 : 1) / this.transform.k,
+                    dy * (ev.shiftKey ? 3 : 1) / this.transform.k);
+            };
+            switch (ev.key) {
+                case 'ArrowLeft':  pan(PAN, 0); break;
+                case 'ArrowRight': pan(-PAN, 0); break;
+                case 'ArrowUp':    pan(0, PAN); break;
+                case 'ArrowDown':  pan(0, -PAN); break;
+                case '+': case '=': this.userMoved = true; this.zoomBy(1.5); break;
+                case '-': case '_': this.userMoved = true; this.zoomBy(1 / 1.5); break;
+                case '0': this.resetView(); break;
+                case 'n': case 'N': this.step(1); break;
+                case 'p': case 'P': this.step(-1); break;
+                case 'Enter': {
+                    const link = document.getElementById('atlas-panel')?.querySelector('.atlas-panel-open');
+                    if (!link) return;
+                    link.click();
+                    break;
+                }
+                case 'Escape':
+                    if (!this.pinned && this.hits === null) return;
+                    this.pinned = null; this.hidePanel();
+                    if (this.hits !== null) this.clearSearch(); else this.draw();
+                    break;
+                default: return;
+            }
+            ev.preventDefault();
+        });
+    }
+
+    /* Walk the paragraphs, staying inside the search hits while one is active. */
+    step(dir) {
+        const pool = this.hits === null
+            ? this.chunks
+            : [...this.hits.keys()].sort((a, b) => this.hits.get(b) - this.hits.get(a)).map(i => this.chunks[i]);
+        if (!pool.length) return;
+        const at = this.pinned ? pool.indexOf(this.pinned) : -1;
+        const next = pool[((at + dir) % pool.length + pool.length) % pool.length];
+        this.pinned = next;
+        this.centerOn(next);
+        this.showPanel(next, true);
+        this.draw();
+    }
+
     /* ---------------- Panel ---------------- */
 
     escape(s) {
@@ -271,13 +368,25 @@ class Atlas {
             <p class="atlas-panel-text">${this.escape(chunk.text)}</p>
             <a class="atlas-panel-open" href="${href}">Read in context &rarr;</a>
         `;
+        // Hover previews must not steal the pointer from the canvas beneath
+        // them (mouseenter/leave would otherwise repeatedly show/hide them).
+        // Only a click-pinned panel exposes interactive controls.
+        panel.classList.toggle('pinned', pinnedMode);
+        panel.inert = !pinnedMode;
         panel.classList.add('visible');
         const closeBtn = panel.querySelector('.atlas-panel-close');
-        if (closeBtn) closeBtn.onclick = () => { this.pinned = null; this.hidePanel(); this.draw(); };
+        if (closeBtn) closeBtn.onclick = () => {
+            this.pinned = null; this.hovered = null;
+            this.hidePanel(); this.draw();
+        };
     }
 
     hidePanel() {
-        document.getElementById('atlas-panel')?.classList.remove('visible');
+        const panel = document.getElementById('atlas-panel');
+        if (panel) {
+            panel.classList.remove('visible', 'pinned');
+            panel.inert = true;
+        }
     }
 
     /* ---------------- Legend & stats ---------------- */
@@ -318,10 +427,13 @@ class Atlas {
             this.setStatus('Downloading model to your browser (~25 MB, cached after first load)…', true);
             const [mod, binRes] = await Promise.all([
                 import(TRANSFORMERS_CDN),
-                fetch('/atlas/atlas-vectors.bin')
+                fetch(this.container.dataset.vectors)
             ]);
             if (!binRes.ok) throw new Error('vectors unavailable');
             const buf = await binRes.arrayBuffer();
+            if (buf.byteLength !== this.chunks.length * this.meta.dims) {
+                throw new Error('Atlas vectors do not match the map; reload the page to update both.');
+            }
             this.vectors = new Int8Array(buf);
             const D = this.meta.dims;
             this.vecNorms = new Float32Array(this.chunks.length);
@@ -347,7 +459,7 @@ class Atlas {
             this.setStatus('Model ready — your query never leaves this page.');
         })().catch(e => {
             this._enginePromise = null;
-            this.setStatus('Could not load the search model (network blocked?). The map still works.');
+            this.setStatus('Could not load the search model or matching Atlas data. Reload the page and retry; the map still works.');
             throw e;
         });
         return this._enginePromise;
@@ -413,6 +525,7 @@ class Atlas {
     }
 
     centerOn(chunk) {
+        this.userMoved = true;
         const k = Math.max(this.transform.k, 2.5);
         const t = d3.zoomIdentity
             .translate(this.width / 2 - k * chunk.x, this.height / 2 - k * chunk.y)
